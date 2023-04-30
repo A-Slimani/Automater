@@ -1,12 +1,15 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Interactions;
 using Automater;
+using OpenQA.Selenium.Remote;
 
 class Program
 {
     static void Main(string[] args)
     {
-        IWebDriver driver = new EdgeDriver();
+        EdgeDriverService currentDriverService = EdgeDriverService.CreateDefaultService();
+        IWebDriver driver = new RemoteWebDriver(currentDriverService.ServiceUrl, new EdgeOptions());
         driver.Navigate().GoToUrl("https://www.bing.com/");
         ICollection<IWebElement> elements = driver.FindElements(By.XPath("//*[@id]"));
 
@@ -16,10 +19,13 @@ class Program
         {
             if (element.Text.Equals("Rewards"))
             {
-                Console.WriteLine("Rewards Found");
+                Actions action = new Actions(driver);
+                // action.MoveToElement(element).Click();
+                element.Click();
+                break;
             }
         }
 
-        driver.Quit();
+        // driver.Quit();
     }
 }
