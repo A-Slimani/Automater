@@ -8,8 +8,9 @@ class Program
 {
     static void Main(string[] args)
     {
-        EdgeDriverService currentDriverService = EdgeDriverService.CreateDefaultService();
-        IWebDriver driver = new RemoteWebDriver(currentDriverService.ServiceUrl, new EdgeOptions());
+        IWebDriver driver = SeleniumFunctions.currentBrowserInstance();
+        
+    /*
         driver.Navigate().GoToUrl("https://www.bing.com/");
         ICollection<IWebElement> elements = driver.FindElements(By.XPath("//*[@id]"));
 
@@ -25,6 +26,7 @@ class Program
                 break;
             }
         }
+    */
 
         // driver.Quit();
     }
