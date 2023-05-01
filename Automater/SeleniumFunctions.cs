@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Remote;
+using WebDriverManager;
 
 namespace Automater
 {
@@ -8,9 +9,9 @@ namespace Automater
   {
     public static IWebDriver newBrowserInstance()
     {
-      EdgeDriverService driverService = EdgeDriverService.CreateDefaultService();
-      return new RemoteWebDriver(driverService.ServiceUrl, new EdgeOptions());
+        return new EdgeDriver();
     }
+
     public static IWebDriver currentBrowserInstance()
     {
       EdgeOptions options = new EdgeOptions();
@@ -18,6 +19,7 @@ namespace Automater
 
       return new EdgeDriver(options);
     }
+
     public static IEnumerable<IWebElement> FindAllClickableElements(ICollection<IWebElement> webElements)
     {
 
@@ -38,5 +40,6 @@ namespace Automater
         if (isClickable) yield return element;
       }
     }
+
   }
 }
