@@ -1,36 +1,22 @@
-﻿using OpenQA.Selenium;
+﻿using Automater;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Interactions;
-using Automater;
-using OpenQA.Selenium.Remote;
-using WebDriverManager;
-using OpenQA.Selenium.Support.UI;
 
 class Program
 {
     static void Main(string[] args)
     {
-        IWebDriver driver = SeleniumFunctions.newBrowserInstance();
-        
-        driver.Navigate().GoToUrl("https://www.bing.com/");
-        ICollection<IWebElement> elements = driver.FindElements(By.XPath("//*[@id]"));
+        IWebDriver driver = new EdgeDriver();
 
-        IEnumerable<IWebElement> clickableElements = SeleniumFunctions.FindAllClickableElements(elements);
+        driver.Navigate().GoToUrl("https://rewards.bing.com/?signin=1");
 
-        IWebElement? rewardElement = clickableElements.FirstOrDefault(e => e.Text == "Rewards");
+        ICollection<IWebElement> cardElements = driver.FindElements(By.XPath("//*[@class=\"c-card-content\"]"));
 
-        if(rewardElement != null)
-        {
-            rewardElement.Click();
-            // Add a list of actions with this
-            // open a new tab and complete each one
-            ICollection<IWebElement> rewardsElements = driver.FindElements(By.XPath("//*[@id=\"modern-flyout\"]"));
-        }
-        else
-        {
-            Console.WriteLine("no rewards element found");
-        }
- 
+        ICollection<IWebElement> pointElements = driver.FindElements(By.XPath("//*[@aria-label=\"\"]"));
+
+        // Use the PrintAllElements function here 
+        SeleniumFunctions.PrintAllElementsText(pointElements, "point-elements"); 
+
         // driver.Quit();
     }
 }
