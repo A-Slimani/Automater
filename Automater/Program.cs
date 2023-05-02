@@ -6,6 +6,8 @@ class Program
 {
     static void Main(string[] args)
     {
+        EdgeOptions options = new EdgeOptions();
+        options.AddExcludedArgument("enable-logging");
         IWebDriver driver = new EdgeDriver();
 
         driver.Navigate().GoToUrl("https://rewards.bing.com/?signin=1");
@@ -15,7 +17,7 @@ class Program
         ICollection<IWebElement> pointElements = driver.FindElements(By.XPath("//*[@aria-label=\"\"]"));
 
         // Use the PrintAllElements function here 
-        SeleniumFunctions.PrintAllElementsText(pointElements, "point-elements"); 
+        SeleniumFunctions.PrintAllElementsText(pointElements, "point-elements");
 
         // driver.Quit();
     }
