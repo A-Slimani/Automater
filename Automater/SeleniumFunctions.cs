@@ -1,8 +1,5 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Remote;
-using System.Xml.XPath;
-using WebDriverManager;
 
 namespace Automater
 {
@@ -16,17 +13,31 @@ namespace Automater
             return new EdgeDriver(options);
         }
 
-        public static void PrintAllElementsText(ICollection<IWebElement> elements, string filename)
+        public static void PrintAllElementsText(ICollection<IWebElement> elements, string filename, Func<IWebElement, string> getInfo)
         {
-            string filepath = @$"D:\programming\C#\Automater\Automater\{filename}.txt"; 
+            string filepath = @$"D:\programming\C#\Automater\Automater\{filename}.txt";
 
             if (File.Exists(filepath)) File.Delete(filepath);
 
+            string result = $"{elements.Count()} results found for {filename}";
+
+            if (elements.Count() > 0)
+            {
+                File.AppendAllText(filepath, result);
+                File.AppendAllText(filepath, "\nElement Text List:\n==========\n");
+                Console.WriteLine(result);
+            }
+            else
+            {
+                File.AppendAllText(filepath, result);
+                Console.WriteLine(result);
+            }
+
             foreach (IWebElement element in elements)
             {
-                if(!string.IsNullOrEmpty(element.Text))
+                if (!string.IsNullOrEmpty(getInfo(element)))
                 {
-                    File.AppendAllText(filepath, element.Text);
+                    File.AppendAllText(filepath, getInfo(element));
                 }
             }
         }
