@@ -1,50 +1,41 @@
 ﻿using Automater;
-using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Interactions;
 using System.Text.RegularExpressions;
-
 
 class Program
 {
-  static void Main(string[] args)
-  {
+    static void Main(string[] args)
+    {
+        EdgeOptions options = new EdgeOptions();
+        options.AddExcludedArgument("enable-logging");
+        IWebDriver driver = new EdgeDriver(options);
 
-    string path = @"C:\Users\aboud\Documents\programming\Automater\Automater\wordlist.json";
-    string json = File.ReadAllText(path);
+        driver.Navigate().GoToUrl("https://rewards.bing.com/?signin=1");
 
-    /*
-    EdgeOptions options = new EdgeOptions();
-    options.AddExcludedArgument("enable-logging");
-    IWebDriver driver = new EdgeDriver(options);
+        ICollection<IWebElement> cardElements =
+            driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
 
-    driver.Navigate().GoToUrl("https://rewards.bing.com/?signin=1");
+        // Dont think I will need this anymore
+        // ICollection<IWebElement> pointElements = driver.FindElements(By.XPath("//*[@class='mee-icon mee-icon-AddMedium']"));
 
-    ICollection<IWebElement> cardElements =
-        driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
+        // SeleniumFunctions.downloadAllElements(cardElements, "card-elements", e => e.GetAttribute("innerHTML"), "html");
 
-    // Dont think I will need this anymore
-    // ICollection<IWebElement> pointElements = driver.FindElements(By.XPath("//*[@class='mee-icon mee-icon-AddMedium']"));
+        ICollection<IWebElement> filteredElements =
+            SeleniumFunctions.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
 
-    // SeleniumFunctions.downloadAllElements(cardElements, "card-elements", e => e.GetAttribute("innerHTML"), "html");
+        // FOR DEBUGGING PURPOSES
+        // SeleniumFunctions.downloadAllElements(filteredElements, "filtered_elements", e => e.Text, "txt");
 
-    ICollection<IWebElement> filteredElements =
-        SeleniumFunctions.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
+        SeleniumFunctions.AutomatedSearches(driver);
 
-    // REACTIVATE THIS 
-    // SeleniumFunctions.downloadAllElements(filteredElements, "filtered_elements", e => e.Text, "txt");
+        SeleniumFunctions.ActivateRewards(filteredElements, driver);
 
-    // REACTIVATE THIS
-    // SeleniumFunctions.ActivateRewards(filteredElements, driver);
 
-    // SeleniumFunctions.AutomatedSearches(driver);
-
-    // END APPLICATION 
-    int seconds = 15;
-    Console.WriteLine($"program will end in {seconds} seconds...");
-    Thread.Sleep(1000 * seconds);
-    driver.Quit();
-    */
-  }
+        // END APPLICATION 
+        int seconds = 60;
+        Console.WriteLine($"program will end in {seconds} seconds...");
+        Thread.Sleep(1000 * seconds);
+        driver.Quit();
+    }
 }
