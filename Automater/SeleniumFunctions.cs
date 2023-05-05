@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Newtonsoft.Json;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
@@ -104,7 +105,11 @@ namespace Automater
       driver.Navigate().GoToUrl("https://bing.com");
 
       IWebElement searchBar = driver.FindElement(By.XPath("//*[@id=\"sb_form_q\"]"));
-      searchBar.SendKeys($"{}")
+
+      var randomWords = JsonConvert.DeserializeObject(@"./wordlist.json");
+      Console.WriteLine(randomWords);
+
+      // searchBar.SendKeys($"{}")
       
       Actions actions = new Actions(driver); 
 

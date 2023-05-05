@@ -1,4 +1,5 @@
 ﻿using Automater;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Interactions;
@@ -9,6 +10,11 @@ class Program
 {
   static void Main(string[] args)
   {
+
+    string path = @"C:\Users\aboud\Documents\programming\Automater\Automater\wordlist.json";
+    string json = File.ReadAllText(path);
+
+    /*
     EdgeOptions options = new EdgeOptions();
     options.AddExcludedArgument("enable-logging");
     IWebDriver driver = new EdgeDriver(options);
@@ -32,12 +38,13 @@ class Program
     // REACTIVATE THIS
     // SeleniumFunctions.ActivateRewards(filteredElements, driver);
 
-    SeleniumFunctions.AutomatedSearches(driver);
+    // SeleniumFunctions.AutomatedSearches(driver);
 
     // END APPLICATION 
     int seconds = 15;
     Console.WriteLine($"program will end in {seconds} seconds...");
     Thread.Sleep(1000 * seconds);
     driver.Quit();
+    */
   }
 }
