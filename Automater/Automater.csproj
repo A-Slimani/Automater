@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="docopt.net" Version="0.8.1" />
     <PackageReference Include="Selenium.WebDriver" Version="4.9.0" />
     <PackageReference Include="WebDriverManager" Version="2.16.2" />
   </ItemGroup>

@@ -6,17 +6,26 @@ using System.Text.RegularExpressions;
 
 namespace Automater
 {
-    internal class SeleniumFunctions
+    internal static class SeleniumFunctions
     {
-        public static IWebDriver currentBrowserInstance()
+        // dont think I need this anymore
+        public static IWebDriver CurrentBrowserInstance()
         {
-            EdgeOptions options = new EdgeOptions();
-            options.DebuggerAddress = "localhost:9222";
-
+            var options = new EdgeOptions
+            {
+                DebuggerAddress = "localhost:9222"
+            };
             return new EdgeDriver(options);
         }
 
-        public static void downloadAllElements(ICollection<IWebElement> elements, string filename, Func<IWebElement, string> getInfo, string fileType)
+        public static IWebDriver InitialiseEdgeDriver()
+        {
+            EdgeOptions options = new();
+            options.AddExcludedArgument("enable-logging");
+            return new EdgeDriver(options);
+        }
+
+        public static void DownloadAllElementsToFile(ICollection<IWebElement> elements, string filename, Func<IWebElement, string> getInfo, string fileType)
         {
             string filepath = @$"D:\programming\C#\Automater\Automater\{filename}.{fileType}";
 
@@ -25,7 +34,7 @@ namespace Automater
             string result = $"{elements.Count} results found for {filename}";
             Console.WriteLine(result);
 
-            foreach (IWebElement element in elements)
+            foreach (var element in elements)
             {
                 if (!string.IsNullOrEmpty(getInfo(element)))
                 {
@@ -40,9 +49,8 @@ namespace Automater
         public static IEnumerable<IWebElement> GetAllClickableElements(ICollection<IWebElement> webElements)
         {
 
-            foreach (IWebElement element in webElements)
+            foreach (var element in webElements)
             {
-
                 bool isClickable = false;
 
                 try
@@ -58,37 +66,42 @@ namespace Automater
             }
         }
 
-        public static IEnumerable<IWebElement> FilterElements(ICollection<IWebElement> webElements, Regex regex)
+        private static IEnumerable<IWebElement> FilterElements(ICollection<IWebElement> webElements, Regex regex)
         {
-            foreach (IWebElement element in webElements)
-            {
-                if (regex.IsMatch(element.GetAttribute("innerHTML")))
-                {
-                    yield return element;
-                }
-            }
+            return webElements.Where(element => regex.IsMatch(element.GetAttribute("innerHTML")));
         }
 
-        public static void ActivateRewards(ICollection<IWebElement> webElements, IWebDriver driver)
+        public static void ActivateRewards(IWebDriver driver)
         {
-            Actions actions = new Actions(driver);
-            foreach (IWebElement element in webElements)
+            driver.Navigate().GoToUrl("https://rewards.bing.com/?signin=1");
+            
+            ICollection<IWebElement> cardElements =
+                driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
+
+            ICollection<IWebElement> filteredElements =
+                SeleniumFunctions.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
+
+
+            var actions = new Actions(driver);
+            foreach (var element in filteredElements)
             {
                 // this only covers rewards that dont have another complete scenario i.e. questions
 
                 actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
 
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                wait.Until(driver =>
+                wait.Until(dv =>
                 {
-                    if (((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"))
+                    if (((IJavaScriptExecutor)dv).ExecuteScript("return document.readyState").Equals("complete"))
                     {
                         Console.WriteLine("Page loaded.");
                         // check if the page has a question to run another function here 
+
                         // create a step to close the tab once its loaded here
-                        driver.SwitchTo().Window(driver.WindowHandles.Last());
-                        driver.Close();
-                        driver.SwitchTo().Window(driver.WindowHandles.First());
+
+                        dv.SwitchTo().Window(dv.WindowHandles.Last());
+                        dv.Close();
+                        dv.SwitchTo().Window(dv.WindowHandles.First());
                         return true;
                     }
                     else
@@ -109,26 +122,27 @@ namespace Automater
             string[] lines = File.ReadAllLines(@"D:\programming\C#\Automater\Automater\MOCK_DATA.txt");
 
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-            wait.Until(driver =>
+            wait.Until(dv =>
             {
-                if (((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"))
+                if (((IJavaScriptExecutor)dv).ExecuteScript("return document.readyState").Equals("complete"))
                 {
                     // placeholder for now
                     // find a better way to handle this look for remaining points and calculate from there
-                    for (int i = 0; i < 30; i++)
+                    for (int i = 0; i < 2; i++)
                     {
                         Random r = new Random();
                         string randomWord = lines[r.Next(lines.Length)];
 
                         Console.WriteLine("Page loaded.");
 
-                        IWebElement searchBar = driver.FindElement(By.XPath("//*[@id=\"sb_form_q\"]"));
+                        Thread.Sleep(500);
+                        IWebElement searchBar = dv.FindElement(By.XPath("//*[@id=\"sb_form_q\"]"));
                         searchBar.SendKeys($"{randomWord}");
                         searchBar.SendKeys(Keys.Enter);
-                        Console.WriteLine($"Searched for: {randomWord}");
+                        Console.WriteLine($"{i}: Searched for {randomWord}");
 
                         // make a check to only go back once the word has been searched
-                        driver.Navigate().Back();
+                        dv.Navigate().Back();
                     }
                     return true;
                 }
@@ -138,6 +152,13 @@ namespace Automater
                     return false;
                 }
             });
+        }
+
+        public static void CloseSelenium(int seconds, IWebDriver driver)
+        {
+            Console.WriteLine($"program will end in {seconds} seconds...");
+            Thread.Sleep(1000 * seconds);
+            driver.Quit();
         }
     }
 }
