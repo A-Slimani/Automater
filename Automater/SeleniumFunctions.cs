@@ -8,7 +8,6 @@ namespace Automater
 {
     internal static class SeleniumFunctions
     {
-        // dont think I need this anymore
         public static IWebDriver CurrentBrowserInstance()
         {
             var options = new EdgeOptions
@@ -74,33 +73,23 @@ namespace Automater
         public static void ActivateRewards(IWebDriver driver)
         {
             driver.Navigate().GoToUrl("https://rewards.bing.com/?signin=1");
-            
-            ICollection<IWebElement> cardElements =
-                driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
 
-            ICollection<IWebElement> filteredElements =
-                SeleniumFunctions.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
+            var cardElements = driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
 
+            var filteredElements = SeleniumFunctions.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
 
             var actions = new Actions(driver);
             foreach (var element in filteredElements)
             {
-                // this only covers rewards that dont have another complete scenario i.e. questions
-
                 actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
 
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 wait.Until(dv =>
                 {
                     if (((IJavaScriptExecutor)dv).ExecuteScript("return document.readyState").Equals("complete"))
                     {
                         Console.WriteLine("Page loaded.");
-                        // check if the page has a question to run another function here 
-
-                        // create a step to close the tab once its loaded here
-
-                        dv.SwitchTo().Window(dv.WindowHandles.Last());
-                        dv.Close();
+                        dv.SwitchTo().Window(dv.WindowHandles.Last()).Close();
                         dv.SwitchTo().Window(dv.WindowHandles.First());
                         return true;
                     }
@@ -126,11 +115,11 @@ namespace Automater
             {
                 if (((IJavaScriptExecutor)dv).ExecuteScript("return document.readyState").Equals("complete"))
                 {
-                    // placeholder for now
-                    // find a better way to handle this look for remaining points and calculate from there
+                    var r = new Random();
+
+                    // instead of a set number try to get the amount from remaining points
                     for (int i = 0; i < 2; i++)
                     {
-                        Random r = new Random();
                         string randomWord = lines[r.Next(lines.Length)];
 
                         Console.WriteLine("Page loaded.");
@@ -141,7 +130,7 @@ namespace Automater
                         searchBar.SendKeys(Keys.Enter);
                         Console.WriteLine($"{i}: Searched for {randomWord}");
 
-                        // make a check to only go back once the word has been searched
+                        wait.Until(d => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
                         dv.Navigate().Back();
                     }
                     return true;

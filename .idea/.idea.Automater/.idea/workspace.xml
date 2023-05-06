@@ -4,20 +4,17 @@
     <projectFile>Automater/Automater.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00567047-a132-49b9-8b82-bc2dc8fa8622" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Automater/CFunctions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Automater.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater/Automater.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/Automater.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater/MOCK_DATA.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/MOCK_DATA.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/Program.cs" afterDir="false" />
+    <list default="true" id="00567047-a132-49b9-8b82-bc2dc8fa8622" name="Changes" comment="updates">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Automater/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Automater/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Automater/SeleniumFunctions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/SeleniumFunctions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater/card-elements.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater/filtered_elements.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock://D:/programming/C#/Automater/Automater/SeleniumFunctions.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -65,8 +62,23 @@
       <option name="presentableId" value="Default" />
       <updated>1683365101339</updated>
       <workItem from="1683365105071" duration="1153000" />
-      <workItem from="1683366282576" duration="1458000" />
+      <workItem from="1683366282576" duration="2143000" />
     </task>
+    <task id="LOCAL-00001" summary="updates">
+      <created>1683367825967</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1683367825967</updated>
+    </task>
+    <task id="LOCAL-00002" summary="updates">
+      <created>1683367842938</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1683367842938</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -87,6 +99,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="updates" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
