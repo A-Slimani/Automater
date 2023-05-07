@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 using System.Text.RegularExpressions;
 
 namespace Automater
@@ -106,56 +107,28 @@ namespace Automater
         {
             driver.Navigate().GoToUrl("https://bing.com");
 
-            IWebElement searchButton = driver.FindElement(By.XPath("//*[@id=\"search_icon\"]"));
+            var lines = File.ReadAllLines(Path.Combine(Directory.GetCurrentDirectory(), "word_list.txt"));
 
-            string[] lines = File.ReadAllLines(@$"{System.IO.Directory.GetCurrentDirectory()}\word_list.txt");
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-            wait.Until(dv =>
+            for (int i = 0; i < 30; i++)
             {
-                if (((IJavaScriptExecutor)dv).ExecuteScript("return document.readyState").Equals("complete"))
-                {
-                    var r = new Random();
+                var randomWord = lines[new Random().Next(lines.Length)];
 
-                    // instead of a set number try to get the amount from remaining points
-                    for (int i = 0; i < 30; i++)
-                    {
-                        string randomWord = lines[r.Next(lines.Length)];
+                Console.WriteLine($"Searching for {randomWord}");
 
-                        Console.WriteLine("Page loaded.");
+                var searchBar = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("sb_form_q")));
+                searchBar.Clear();
+                searchBar.SendKeys(randomWord);
+                searchBar.Submit();
 
-                        // to assist with search
-                        bool goBack = false;
-                        int seconds = 1;
-                        Thread.Sleep(1000 * seconds);
+                wait.Until(ExpectedConditions.TitleContains(randomWord));
 
-                        try
-                        {
-                            IWebElement searchBar = dv.FindElement(By.XPath("//*[@id=\"sb_form_q\"]"));
-                            searchBar.SendKeys($"{randomWord}");
-                            searchBar.SendKeys(Keys.Enter);
-                            Console.WriteLine($"{i}: Searched for {randomWord}");
-                            goBack = true;
-                        }
-                        catch (NoSuchElementException ex)
-                        {
-                            Console.WriteLine($"Error: {ex}");
-                            driver.Navigate().GoToUrl("https://bing.com");
-                            seconds += 1;
-                        }
+                // Modify this to check how many points you have left
+                Console.WriteLine($"Found {randomWord}");
 
-                        // maybe just make this first
-                        wait.Until(d => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
-                        if (goBack) dv.Navigate().Back();
-                    }
-                    return true;
-                }
-                else
-                {
-                    Console.WriteLine("Failed to load.");
-                    return false;
-                }
-            });
+                driver.Navigate().Back();
+            }
         }
 
         public static void CloseSelenium(int seconds, IWebDriver driver)
