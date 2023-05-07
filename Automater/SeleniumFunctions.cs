@@ -111,7 +111,20 @@ namespace Automater
 
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
-            for (int i = 0; i < 30; i++)
+            // given up this method cant get this garbage points element
+
+            /*
+            var rewardsElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Rewards")));
+            // hack since ElementToBeClickable isnt really working for this
+            Thread.Sleep(2000);
+            rewardsElement.Click();
+
+            Thread.Sleep(2000);
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@aria-label='PC search: 90/90']")));
+            var remainingPointsElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("div.mfo_c_es")));
+            */
+
+            for (int i = 0; i < 50; i++)
             {
                 var randomWord = lines[new Random().Next(lines.Length)];
 
