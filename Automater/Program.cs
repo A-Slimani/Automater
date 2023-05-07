@@ -1,7 +1,4 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Edge;
-
-namespace Automater;
+﻿namespace Automater;
 internal static class Program
 {
     private static void Main(string[] args)
@@ -10,6 +7,6 @@ internal static class Program
 
         SeleniumFunctions.AutomatedSearches(driver);
         SeleniumFunctions.ActivateRewards(driver);
-        SeleniumFunctions.CloseSelenium(30, driver);
+        SeleniumFunctions.CloseSelenium(15, driver);
     }
 }

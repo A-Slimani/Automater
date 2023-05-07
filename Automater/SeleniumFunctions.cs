@@ -26,6 +26,7 @@ namespace Automater
 
         public static void DownloadAllElementsToFile(ICollection<IWebElement> elements, string filename, Func<IWebElement, string> getInfo, string fileType)
         {
+            // this wont work on other devices
             string filepath = @$"D:\programming\C#\Automater\Automater\{filename}.{fileType}";
 
             if (File.Exists(filepath)) File.Delete(filepath);
@@ -47,7 +48,6 @@ namespace Automater
         // Write both functions first
         public static IEnumerable<IWebElement> GetAllClickableElements(ICollection<IWebElement> webElements)
         {
-
             foreach (var element in webElements)
             {
                 bool isClickable = false;
@@ -76,7 +76,7 @@ namespace Automater
 
             var cardElements = driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
 
-            var filteredElements = SeleniumFunctions.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
+            var filteredElements = FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
 
             var actions = new Actions(driver);
             foreach (var element in filteredElements)
@@ -108,7 +108,7 @@ namespace Automater
 
             IWebElement searchButton = driver.FindElement(By.XPath("//*[@id=\"search_icon\"]"));
 
-            string[] lines = File.ReadAllLines(@"D:\programming\C#\Automater\Automater\MOCK_DATA.txt");
+            string[] lines = File.ReadAllLines(@$"{System.IO.Directory.GetCurrentDirectory()}\word_list.txt");
 
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
             wait.Until(dv =>
@@ -118,20 +118,35 @@ namespace Automater
                     var r = new Random();
 
                     // instead of a set number try to get the amount from remaining points
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < 30; i++)
                     {
                         string randomWord = lines[r.Next(lines.Length)];
 
                         Console.WriteLine("Page loaded.");
 
-                        Thread.Sleep(500);
-                        IWebElement searchBar = dv.FindElement(By.XPath("//*[@id=\"sb_form_q\"]"));
-                        searchBar.SendKeys($"{randomWord}");
-                        searchBar.SendKeys(Keys.Enter);
-                        Console.WriteLine($"{i}: Searched for {randomWord}");
+                        // to assist with search
+                        bool goBack = false;
+                        int seconds = 1;
+                        Thread.Sleep(1000 * seconds);
 
+                        try
+                        {
+                            IWebElement searchBar = dv.FindElement(By.XPath("//*[@id=\"sb_form_q\"]"));
+                            searchBar.SendKeys($"{randomWord}");
+                            searchBar.SendKeys(Keys.Enter);
+                            Console.WriteLine($"{i}: Searched for {randomWord}");
+                            goBack = true;
+                        }
+                        catch (NoSuchElementException ex)
+                        {
+                            Console.WriteLine($"Error: {ex}");
+                            driver.Navigate().GoToUrl("https://bing.com");
+                            seconds += 1;
+                        }
+
+                        // maybe just make this first
                         wait.Until(d => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
-                        dv.Navigate().Back();
+                        if (goBack) dv.Navigate().Back();
                     }
                     return true;
                 }
@@ -145,7 +160,7 @@ namespace Automater
 
         public static void CloseSelenium(int seconds, IWebDriver driver)
         {
-            Console.WriteLine($"program will end in {seconds} seconds...");
+            Console.WriteLine($"Rewards Automater complete. Program will end in {seconds} seconds...");
             Thread.Sleep(1000 * seconds);
             driver.Quit();
         }
