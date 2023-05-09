@@ -26,7 +26,7 @@ namespace Automater
     }
 
     // Create a base class then make it a lil different depending on the card??
-    public static void ActivateRewards(IWebDriver driver)
+    public static void ActivateRewardCards(IWebDriver driver)
     {
       driver.Navigate().GoToUrl("https://rewards.bing.com/?signin=1");
 
@@ -42,6 +42,18 @@ namespace Automater
 
         // filters out other text from the element
         string cardNameText = element.Text.Split(new string[] {"\r\n"}, StringSplitOptions.None)[1];
+
+        // add a regex check if `cardNameText` equals to either quiz, question or poll
+        Regex questionCard = new Regex("(quiz|question|poll)", RegexOptions.IgnoreCase);
+
+        if (questionCard.IsMatch(cardNameText))
+        {
+          // run ActivateCardQuestionsAndPolls() here
+           
+        }
+
+        var answersText = driver.FindElements(By.ClassName("bt_cardText"));
+        answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
 
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         wait.Until(dv =>
@@ -81,12 +93,13 @@ namespace Automater
         searchBar.SendKeys(randomWord);
         searchBar.Submit();
 
-        // have a better check for this. Still kinda buggy
+        // Added this sleep so that its less likely to bug out
+        Thread.Sleep(1000);
         wait.Until(ExpectedConditions.TitleContains(randomWord));
 
         Console.WriteLine($"Search complete. {remainingPoints - (i + 1)} searches remaining");
 
-        driver.Navigate().Back();
+        driver.Navigate().GoToUrl("https://bing.com");
       }
     }
 
