@@ -1,49 +1,44 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Automater
+﻿namespace Automater
 {
 
-  public static async Task<List<string>> GetCorrectAnswers(string[] potentialAnswers)
-  {
-    string apiKey = "";
-
-    string prompt = "";
-
-    HttpClient httpClient = new HttpClient();
-    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
-    var requestUri = new Uri($"https://api.openai.com/v1/completions");
-
-    var requestBody = new
+    /*
+    public static async Task<List<string>> GetCorrectAnswers(string[] potentialAnswers)
     {
-      prompt = prompt,
-      temperature = 0.5,
-      max_tokens = 5,
-      n = 1,
-      stop = "."
-    };
+        string apiKey = "";
 
-    var requestContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+        string prompt = "";
 
-    var response = await httpClient.PostAsync(requestUri, requestContent);
+        HttpClient httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 
-    if(response.IsSuccessStatusCode)
-    {
-      var responseContent = await response.Content.ReadAsStringAsync();
+        var requestUri = new Uri($"https://api.openai.com/v1/completions");
 
-      dynamic? responseObject = JsonConvert.DeserializeObject(responseContent);
+        var requestBody = new
+        {
+            prompt = prompt,
+            temperature = 0.5,
+            max_tokens = 5,
+            n = 1,
+            stop = "."
+        };
 
-      string? text = responseObject?.choices[0].text;
+        var requestContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
 
-      return text; 
+        var response = await httpClient.PostAsync(requestUri, requestContent);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            dynamic? responseObject = JsonConvert.DeserializeObject(responseContent);
+
+            string? text = responseObject?.choices[0].text;
+
+        }
+        else
+        {
+            throw new Exception($"Error: {response.ReasonPhrase}");
+        }
     }
-    else
-    {
-      throw new Exception($"Error: {response.ReasonPhrase}");
-    }
-  }
+    */
 }
