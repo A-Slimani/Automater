@@ -13,7 +13,9 @@ App for automating BING rewards
 - Add options for search with flags
 
 ## Improvements
-- General console output info
-- Automated search still buggy sometimes will not search the word
-- If page doesnt load retry 
+Automated Bing Search
+- still buggy sometimes will not search the word
+- doesnt complete all 90 points maybe just make it go for longer
 
+- If page doesnt load retry 
+- General console output info
