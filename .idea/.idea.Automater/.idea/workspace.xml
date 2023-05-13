@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00567047-a132-49b9-8b82-bc2dc8fa8622" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Automater/Automater.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/Automater.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater/SeleniumFunctions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/SeleniumFunctions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automater/BingElements.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/BingElements.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automater/BingFunctions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/BingFunctions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automater/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +83,7 @@
       <workItem from="1683412009191" duration="2716000" />
       <workItem from="1683417178715" duration="705000" />
       <workItem from="1683421685615" duration="31000" />
+      <workItem from="1683711127529" duration="51000" />
     </task>
     <task id="LOCAL-00001" summary="updates">
       <created>1683367825967</created>
