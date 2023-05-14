@@ -154,6 +154,7 @@ namespace Automater
 
         public static void CloseSelenium(int seconds, IWebDriver driver)
         {
+            Console.WriteLine($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(driver)}");
             Console.WriteLine($"Rewards Automater complete. Program will end in {seconds} seconds...");
             Thread.Sleep(1000 * seconds);
             driver.Quit();
