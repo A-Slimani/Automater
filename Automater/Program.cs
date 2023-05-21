@@ -11,7 +11,7 @@ class Program
 		var bingFunctions = new BingFunctions(driver);
 
 		// bingFunctions.AutomatedSearches();
-		// bingFunctions.ActivateRewardCards();
+		bingFunctions.ActivateRewardCards();
 		bingFunctions.ActivateQuestAndPunchCards();
 		bingFunctions.CloseSelenium(15);
 	}

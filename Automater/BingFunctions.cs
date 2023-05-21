@@ -33,6 +33,7 @@ public class BingFunctions
 		{
 			actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
 
+			// why was this done??: add a note here later
 			string cardNameText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
 			var questionCard = new Regex("(quiz|question|poll)", RegexOptions.IgnoreCase);
 			if (questionCard.IsMatch(cardNameText))
@@ -45,26 +46,12 @@ public class BingFunctions
 			answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
 
 			var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-			wait.Until(dv =>
-			{
-				var scriptResult = ((IJavaScriptExecutor)dv).ExecuteScript("return document.readyState");
-				if (scriptResult.Equals("complete"))
-				{
-					Console.WriteLine($"Reward card {cardNameText} complete.");
-					dv.SwitchTo().Window(dv.WindowHandles.Last()).Close();
-					dv.SwitchTo().Window(dv.WindowHandles.First());
-					return true;
-				}
-				else
-				{
-					Console.WriteLine($"Reward card {cardNameText} failed to load.");
-					return false;
-				}
-			});
+			OpenSetOfElements(element, wait, cardNameText);
 		}
 	}
 
-	public void ActivateCardQuestionsAndPolls(string url)
+	// probably wont be including a string as a arg later
+	public void ActivateQuestionCardsAndPolls(string url)
 	{
 		_driver.Navigate().GoToUrl(url);
 
@@ -138,16 +125,30 @@ public class BingFunctions
 		string url = punchCardElement.GetAttribute("href");
 		punchCardElement.Click();
 		_driver.SwitchTo().Window(_driver.WindowHandles.Last());
-		// _driver.Navigate().GoToUrl(url);
-		// _driver.ExecuteJavaScript("arguments[0].click()", punchCardElement);
 
-		// does it carry over different tabs??
-		var checklistElements = wait.Until(ExpectedConditions.ElementToBeClickable(By.TagName("b")));
-		var test = _driver.FindElements(By.TagName("b"));
-		foreach (var x in test)
+		var checklistElements = _driver.FindElements(By.TagName("b"));
+		foreach (var element in checklistElements)
 		{
-			AnsiConsole.MarkupLine($"Opening: [yellow]{x.Text}[/]");
+			OpenSetOfElements(element, wait, element.Text);
 		}
+	}
+
+	private void OpenSetOfElements(IWebElement element, WebDriverWait wait, string elementText){
+			wait.Until(driver => {
+				var scriptResult = ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState");
+				if(scriptResult.Equals("complete"))
+				{
+					AnsiConsole.MarkupLine($"{element.Text} [green]Complete[/]");
+					driver.SwitchTo().Window(driver.WindowHandles.Last()).Close();
+					driver.SwitchTo().Window(driver.WindowHandles.First());
+					return true;
+				}
+				else 
+				{
+					AnsiConsole.MarkupLine($"{element.Text} [red]Failed[/]");
+					return false;
+				}
+			});
 	}
 
 	public void CloseSelenium(int seconds)
