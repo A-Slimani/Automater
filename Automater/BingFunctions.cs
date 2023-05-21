@@ -136,6 +136,7 @@ public class BingFunctions
 
 	public void CloseSelenium(int seconds)
 	{
+		Console.WriteLine($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(_driver)}");
 		Console.WriteLine($"Rewards Automater complete. Program will end in {seconds} seconds...");
 		Thread.Sleep(1000 * seconds);
 		_driver.Quit();
