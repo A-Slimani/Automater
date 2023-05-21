@@ -4,6 +4,7 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using Spectre.Console;
 
 using System.Text.RegularExpressions;
 
@@ -106,7 +107,17 @@ public class BingFunctions
 				wait.Until(ExpectedConditions.TitleContains(randomWord));
 				remainingPoints--;
 
-				Console.WriteLine($"Search complete. {remainingPoints} searches remaining");
+				//Console.WriteLine($"Search complete. {remainingPoints} searches remaining");
+				AnsiConsole.Progress()
+					.Start(ctx =>
+					{
+						//Define tasks
+						var searches = ctx.AddTask("Searches complete");
+						while (!ctx.IsFinished)
+						{
+							searches.Increment(1);
+						}
+					});
 			}
 			catch (Exception ex)
 			{
