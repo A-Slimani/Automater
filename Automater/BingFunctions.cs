@@ -130,13 +130,18 @@ public class BingFunctions
 
 	public void ActivateQuestAndPunchCards()
 	{
-		// TODO: Implement this method
-		// function will be called after the card search
+		_driver.Navigate().GoToUrl(RewardsUrl);
+
+		var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+		// click da element
+		var punchCardElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("h1[mee-heading='heading']")));
 	}
 
 	public void CloseSelenium(int seconds)
 	{
-		Console.WriteLine($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(_driver)}");
+		// Console.WriteLine($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(_driver)}");
+		AnsiConsole.MarkupLine($"[aqua]POINTS EARNED TODAY:[/] [green]{BingElements.GetPointsEarnedToday(_driver)}[/]");
 		Console.WriteLine($"Rewards Automater complete. Program will end in {seconds} seconds...");
 		Thread.Sleep(1000 * seconds);
 		_driver.Quit();
