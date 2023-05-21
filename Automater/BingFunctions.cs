@@ -26,10 +26,10 @@ public class BingFunctions
 		_driver.Navigate().GoToUrl(RewardsUrl);
 
 		var cardElements = _driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
-		var filteredElements = BingElements.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
+		var incompletedCards = BingElements.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
 
 		var actions = new Actions(_driver);
-		foreach (var element in filteredElements)
+		foreach (var element in incompletedCards)
 		{
 			actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
 
@@ -134,8 +134,20 @@ public class BingFunctions
 
 		var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 
-		// click da element
 		var punchCardElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("h1[mee-heading='heading']")));
+		string url = punchCardElement.GetAttribute("href");
+		punchCardElement.Click();
+		_driver.SwitchTo().Window(_driver.WindowHandles.Last());
+		// _driver.Navigate().GoToUrl(url);
+		// _driver.ExecuteJavaScript("arguments[0].click()", punchCardElement);
+
+		// does it carry over different tabs??
+		var checklistElements = wait.Until(ExpectedConditions.ElementToBeClickable(By.TagName("b")));
+		var test = _driver.FindElements(By.TagName("b"));
+		foreach (var x in test)
+		{
+			AnsiConsole.MarkupLine($"Opening: [yellow]{x.Text}[/]");
+		}
 	}
 
 	public void CloseSelenium(int seconds)
