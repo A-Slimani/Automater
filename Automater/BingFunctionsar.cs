@@ -83,7 +83,7 @@ public class BingFunctions
 		{
 			var randomWord = lines[new Random().Next(lines.Length)];
 
-			Console.WriteLine($"Searching for {randomWord}");
+			AnsiConsole.MarkupLine($"Searching for: [yellow]{randomWord}[/]");
 
 			try
 			{
@@ -143,7 +143,7 @@ public class BingFunctions
 					driver.SwitchTo().Window(driver.WindowHandles.First());
 					return true;
 				}
-				else 
+				else
 				{
 					AnsiConsole.MarkupLine($"{element.Text} [red]Failed[/]");
 					return false;
