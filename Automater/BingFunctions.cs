@@ -73,6 +73,7 @@ public class BingFunctions
 
 	public void AutomatedSearches()
 	{
+		// not navigating to the new url?
 		_driver.Navigate().GoToUrl(BingUrl);
 
 		var lines = File.ReadAllLines(WordListFilePath);
