@@ -39,7 +39,7 @@ public class BingFunctions
 			if (questionCard.IsMatch(cardNameText))
 			{
 				// ActivateCardQuestionsAndPolls(_driver, _driver.Url);
-				Console.WriteLine($"--- QUESTION CARD --- {cardNameText} --- FOUND");
+				AnsiConsole.MarkupLine($"QUESTION CARD: [yellow]{cardNameText}[/]");
 			}
 
 			var answersText = _driver.FindElements(By.ClassName("bt_cardText"));
@@ -109,7 +109,7 @@ public class BingFunctions
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Search failed: {ex}");
+				AnsiConsole.WriteException(ex);
 			}
 
 			if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingPoints(_driver);
