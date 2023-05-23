@@ -67,6 +67,7 @@ public class BingFunctions
 			if (element.GetCssValue("color") != "rbga(200, 0, 0, 1)")
 			{
 				_driver.ExecuteJavaScript("arguments[0].click()", element);
+				answerElements = _driver.FindElements(By.ClassName("bt_cardText"));
 			}
 		}
 	}
