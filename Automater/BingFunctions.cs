@@ -73,15 +73,14 @@ public class BingFunctions
 
 	public void AutomatedSearches()
 	{
-		// not navigating to the new url?
-		_driver.Navigate().GoToUrl(BingUrl);
-
 		var lines = File.ReadAllLines(WordListFilePath);
 		var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 
 		int remainingPoints = BingElements.GetRemainingPoints(_driver);
 		while (remainingPoints > 0)
 		{
+			_driver.Navigate().GoToUrl(BingUrl);
+
 			var randomWord = lines[new Random().Next(lines.Length)];
 
 			AnsiConsole.MarkupLine($"Searching for: [yellow]{randomWord}[/]");

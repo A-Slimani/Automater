@@ -5,10 +5,25 @@ class Program
 {
   static void Main(string[] args)
   {
+    var bingSelection = AnsiConsole.Prompt(
+      new MultiSelectionPrompt<string>()
+        .Title("Choose what functions to run...")
+        .InstructionsText(
+          "Press <space> to select. <Enter> to accept"
+        )
+        .AddChoiceGroup("All", new[] {
+          "Automated Searches",
+          "Activate Reward Cards",
+          "Activate Question And PunchCards"
+        })
+    );
+
+    /*
     var options = new EdgeOptions();
     options.AddExcludedArgument("enable-logging");
     var driver = new EdgeDriver(options);
     var bingFunctions = new BingFunctions(driver);
+
     try
     {
       bingFunctions.AutomatedSearches();
@@ -21,5 +36,6 @@ class Program
       AnsiConsole.WriteException(ex);
       bingFunctions.CloseSelenium(15);
     }
+    */
   }
 }
