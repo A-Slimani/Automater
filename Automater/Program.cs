@@ -28,7 +28,7 @@ class Program
 
     try
     {
-      bingFunctions.ActivateQuestionCardsAndPolls("https://www.bing.com/search?q=Famous%20artists&rnoreward=1&mkt=EN-AU&FORM=ML12JG&skipopalnative=true&rqpiodemo=1&filters=BTEPOKey:%22REWARDSQUIZ_ENAU_MicrosoftRewardsQuizCB_20230523%22%20BTROID:%22Gamification_DailySet_ENAU_20230523_Child2%22%20BTROEC:%220%22%20BTROMC:%2230%22");
+      bingFunctions.ActivateQuestionCardsAndPolls("");
       /*
       bingFunctions.AutomatedSearches();
       bingFunctions.ActivateRewardCards();
