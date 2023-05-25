@@ -28,7 +28,6 @@ class Program
 
     try
     {
-      //bingFunctions.ActivateQuestionCardsAndPolls("");
       bingFunctions.AutomatedSearches();
       bingFunctions.ActivateRewardCards();
       bingFunctions.ActivateQuestAndPunchCards();
