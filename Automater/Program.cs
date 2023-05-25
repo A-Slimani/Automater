@@ -28,13 +28,11 @@ class Program
 
     try
     {
-      bingFunctions.ActivateQuestionCardsAndPolls("");
-      /*
+      //bingFunctions.ActivateQuestionCardsAndPolls("");
       bingFunctions.AutomatedSearches();
       bingFunctions.ActivateRewardCards();
       bingFunctions.ActivateQuestAndPunchCards();
       bingFunctions.CloseSelenium(15);
-      */
     }
     catch (Exception ex)
     {

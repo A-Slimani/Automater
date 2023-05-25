@@ -95,7 +95,7 @@ public class BingFunctions
 				wait.Until(ExpectedConditions.TitleContains(randomWord));
 				remainingPoints--;
 
-				//Console.WriteLine($"Search complete. {remainingPoints} searches remaining");
+				// I dont think it did any of this...
 				AnsiConsole.Progress()
 					.Start(ctx =>
 					{
