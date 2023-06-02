@@ -1,4 +1,7 @@
-﻿class Program
+﻿using OpenQA.Selenium.Edge;
+using Spectre.Console;
+
+class Program
 {
     static void Main(string[] args)
     {
