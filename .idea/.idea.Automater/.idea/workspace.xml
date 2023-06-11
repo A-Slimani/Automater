@@ -4,11 +4,7 @@
     <projectFile pubXmlPath="Automater/Properties/PublishProfiles/FolderProfile.pubxml">Automater/Automater.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00567047-a132-49b9-8b82-bc2dc8fa8622" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Automater/BingElements.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/BingElements.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater/BingFunctions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/BingFunctions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automater/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Automater/Program.cs" afterDir="false" />
-    </list>
+    <list default="true" id="00567047-a132-49b9-8b82-bc2dc8fa8622" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -84,6 +80,7 @@
       <workItem from="1683417178715" duration="705000" />
       <workItem from="1683421685615" duration="31000" />
       <workItem from="1683711127529" duration="51000" />
+      <workItem from="1685682469908" duration="6000" />
     </task>
     <task id="LOCAL-00001" summary="updates">
       <created>1683367825967</created>
