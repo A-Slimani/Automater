@@ -65,7 +65,7 @@ public class BingFunctions
         }
         catch
         {
-            AnsiConsole.MarkupLine("[red]No Start quiz button[/]");
+            AnsiConsole.MarkupLine("[red]No Start quiz button... Continuing with the process[/]");
         }
 
         // Phase 2: Check what class is being used 
