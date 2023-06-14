@@ -156,8 +156,7 @@ public class BingFunctions
             var scriptResult = ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState");
             if (scriptResult.Equals("complete"))
             {
-                // string elementText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
-                string elementText = element.Text;
+                string elementText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
                 AnsiConsole.MarkupLine($"{elementText} [green]Complete[/]");
                 driver.SwitchTo().Window(driver.WindowHandles.Last()).Close();
                 driver.SwitchTo().Window(driver.WindowHandles.First());
