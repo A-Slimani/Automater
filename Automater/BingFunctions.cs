@@ -34,10 +34,12 @@ public class BingFunctions
             actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
 
             string cardNameText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
-            var questionCard = new Regex("(quiz|question|poll|that?)", RegexOptions.IgnoreCase);
+            var questionCard = new Regex("(quiz|question|that?)", RegexOptions.IgnoreCase);
+            // var pollCard = new Regex("(poll)", RegexOptions.IgnoreCase);
 
-            // pass through what kind of question card poll it is
-            if (questionCard.IsMatch(cardNameText)) ActivateQuestionCardsAndPolls();
+            if (questionCard.IsMatch(cardNameText)) ActivateQuestionCard();
+
+            // if (pollCard.IsMatch(cardNameText)) ActivatePollCard();
 
             var answersText = _driver.FindElements(By.ClassName("bt_cardText"));
             answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
@@ -47,13 +49,34 @@ public class BingFunctions
         }
     }
 
-    // probably wont be including a string as a arg later
-    public void ActivateQuestionCardsAndPolls()
+    public void ActivatePollCard()
     {
         var handles = _driver.WindowHandles;
         _driver.SwitchTo().Window(handles[1]);
 
-        AnsiConsole.MarkupLine("Starting [blue]Quiz Elements[/]");
+        AnsiConsole.MarkupLine("Starting [blue]Poll Element[/]");
+
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+        string cssTag = "";
+        var pollQuestion = _driver.FindElement(By.ClassName(cssTag));
+
+        try
+        {
+            _driver.ExecuteJavaScript("arguments[0].click()", pollQuestion);
+        }
+        catch
+        {
+            AnsiConsole.MarkupLine("[yellow]Quiz Complete...[/]");
+        }
+    }
+
+    public void ActivateQuestionCard()
+    {
+        var handles = _driver.WindowHandles;
+        _driver.SwitchTo().Window(handles[1]);
+
+        AnsiConsole.MarkupLine("Starting [blue]Quiz Element[/]");
 
         var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 
@@ -62,40 +85,40 @@ public class BingFunctions
         {
             var startQuizElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("rqStartQuiz")));
             _driver.ExecuteJavaScript("arguments[0].click()", startQuizElement);
-        }
-        catch
-        {
-            AnsiConsole.MarkupLine("[red]No Start quiz button... Continuing with the process[/]");
-        }
 
-        // Phase 2: Check what class is being used 
-        IList<IWebElement> answerElements;
-        string[] answerElementsClasses = { "bt_cardText", "rqOption", "btOptionCard" };
-        string currentCSSTag = answerElementsClasses[0];
-        answerElements = _driver.FindElements(By.ClassName(answerElementsClasses[0]));
-        int count = 1;
-        while (answerElements.Count == 0)
-        {
-            answerElements = _driver.FindElements(By.ClassName(answerElementsClasses[count]));
-            currentCSSTag = answerElementsClasses[count];
-            count++;
-        }
-
-        // Phase 3: Click on all answers
-        try
-        {
-            for (int i = 0; i < 5; i++)
+            // Phase 2: Check what class is being used 
+            IList<IWebElement> answerElements;
+            string[] answerElementsClasses = { "bt_cardText", "rqOption", "btOptionCard" };
+            string currentCSSTag = answerElementsClasses[0];
+            answerElements = _driver.FindElements(By.ClassName(answerElementsClasses[0]));
+            int count = 1;
+            while (answerElements.Count == 0)
             {
-                for (int j = 0; j < answerElements.Count; j++)
+                answerElements = _driver.FindElements(By.ClassName(answerElementsClasses[count]));
+                currentCSSTag = answerElementsClasses[count];
+                count++;
+            }
+
+            // Phase 3: Click on all answers
+            try
+            {
+                for (int i = 0; i < 5; i++)
                 {
-                    answerElements = _driver.FindElements(By.ClassName(currentCSSTag));
-                    _driver.ExecuteJavaScript("arguments[0].click()", answerElements[j]);
+                    for (int j = 0; j < answerElements.Count; j++)
+                    {
+                        answerElements = _driver.FindElements(By.ClassName(currentCSSTag));
+                        _driver.ExecuteJavaScript("arguments[0].click()", answerElements[j]);
+                    }
                 }
+            }
+            catch
+            {
+                AnsiConsole.MarkupLine("[yellow]Quiz Complete...[/]");
             }
         }
         catch
         {
-            AnsiConsole.MarkupLine("[yellow]Quiz Complete...[/]");
+            AnsiConsole.MarkupLine("[red]No Start quiz button... Continuing with the process[/]");
         }
 
         _driver.SwitchTo().Window(handles[0]);
@@ -123,6 +146,8 @@ public class BingFunctions
                 searchBar.Submit();
                 wait.Until(ExpectedConditions.TitleContains(randomWord));
                 remainingPoints--;
+
+                if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingPoints(_driver);
             }
             catch (Exception ex)
             {
