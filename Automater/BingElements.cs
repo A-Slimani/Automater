@@ -7,7 +7,7 @@ namespace Automater
     {
         public static int GetPointsEarnedToday(IWebDriver driver)
         {
-            driver.Navigate().GoToUrl("https://rewards.bing.com/?signin=1");
+            driver.Navigate().GoToUrl("https://rewards.bing.com");
             Thread.Sleep(1000);
             var pointsEarnedToday = driver.FindElement(By.XPath("//*[@id=\"dailypointToolTipDiv\"]/p/mee-rewards-counter-animation/span"));
             return int.Parse(pointsEarnedToday.Text);
