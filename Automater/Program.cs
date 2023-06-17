@@ -23,6 +23,7 @@ class Program
 
         var options = new EdgeOptions();
         options.AddExcludedArgument("enable-logging");
+        options.AddUserProfilePreference("services.sync.enabled", true);
         var driver = new EdgeDriver(options);
         var bingFunctions = new BingFunctions(driver);
 

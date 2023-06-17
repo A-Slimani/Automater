@@ -35,6 +35,7 @@ public class BingFunctions
 
             string cardNameText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
             var questionCard = new Regex("(quiz|question|that?)", RegexOptions.IgnoreCase);
+            // dont think I need poll just open it like any other card
             // var pollCard = new Regex("(poll)", RegexOptions.IgnoreCase);
 
             if (questionCard.IsMatch(cardNameText)) ActivateQuestionCard();
