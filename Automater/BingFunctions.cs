@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 public class BingFunctions
 {
     private const string BingUrl = "https://bing.com";
-    private const string RewardsUrl = "https://rewards.bing.com/?signin=1";
+    private const string RewardsUrl = "https://rewards.bing.com";
     private static readonly string WordListFilePath = Path.Combine(Directory.GetCurrentDirectory(), "word_list.txt");
 
     private readonly IWebDriver _driver;
