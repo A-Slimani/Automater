@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Edge;
+﻿using Microsoft.Extensions.Configuration;
+using OpenQA.Selenium.Edge;
 using Spectre.Console;
 
 class Program
@@ -21,10 +22,17 @@ class Program
         );
         */
 
-        var options = new EdgeOptions();
-        options.AddExcludedArgument("enable-logging");
-        options.AddUserProfilePreference("services.sync.enabled", true);
-        var driver = new EdgeDriver(options);
+        var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+        var configuration = builder.Build();
+
+        var profileDirectory = @"C:\\Users\\aboud\\AppData\\Local\\Microsoft\\Edge\\User Data";
+
+        var edgeOptions = new EdgeOptions();
+        edgeOptions.AddExcludedArgument("enable-logging");
+        edgeOptions.AddUserProfilePreference("profile.default_content_setting_values.popups", 1);
+        // edgeOptions.AddArgument($"user-data-dir={configuration["EdgeProfileDirectory"]}");
+        // edgeOptions.AddArgument($"--profile-directory=Default");
+        var driver = new EdgeDriver(edgeOptions);
         var bingFunctions = new BingFunctions(driver);
 
         try

@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 public class BingFunctions
 {
     private const string BingUrl = "https://bing.com";
-    private const string RewardsUrl = "https://rewards.bing.com/?signin=1";
+    private const string RewardsUrl = "https://rewards.bing.com";
     private static readonly string WordListFilePath = Path.Combine(Directory.GetCurrentDirectory(), "word_list.txt");
 
     private readonly IWebDriver _driver;
@@ -183,7 +183,7 @@ public class BingFunctions
             if (scriptResult.Equals("complete"))
             {
                 string elementText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
-                AnsiConsole.MarkupLine($"{elementText} [green]Complete[/]");
+                AnsiConsole.MarkupLine($"ELEMENT CARD: {elementText} [green]Complete[/]");
                 driver.SwitchTo().Window(driver.WindowHandles.Last()).Close();
                 driver.SwitchTo().Window(driver.WindowHandles.First());
                 return true;
