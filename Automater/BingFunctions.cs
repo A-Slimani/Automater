@@ -35,12 +35,8 @@ public class BingFunctions
 
             string cardNameText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
             var questionCard = new Regex("(quiz|question|that?)", RegexOptions.IgnoreCase);
-            // dont think I need poll just open it like any other card
-            // var pollCard = new Regex("(poll)", RegexOptions.IgnoreCase);
 
             if (questionCard.IsMatch(cardNameText)) ActivateQuestionCard();
-
-            // if (pollCard.IsMatch(cardNameText)) ActivatePollCard();
 
             var answersText = _driver.FindElements(By.ClassName("bt_cardText"));
             answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
@@ -50,29 +46,7 @@ public class BingFunctions
         }
     }
 
-    public void ActivatePollCard()
-    {
-        var handles = _driver.WindowHandles;
-        _driver.SwitchTo().Window(handles[1]);
-
-        AnsiConsole.MarkupLine("Starting [blue]Poll Element[/]");
-
-        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-
-        string cssTag = "";
-        var pollQuestion = _driver.FindElement(By.ClassName(cssTag));
-
-        try
-        {
-            _driver.ExecuteJavaScript("arguments[0].click()", pollQuestion);
-        }
-        catch
-        {
-            AnsiConsole.MarkupLine("[yellow]Quiz Complete...[/]");
-        }
-    }
-
-    public void ActivateQuestionCard()
+    private void ActivateQuestionCard()
     {
         var handles = _driver.WindowHandles;
         _driver.SwitchTo().Window(handles[1]);
@@ -103,6 +77,7 @@ public class BingFunctions
             // Phase 3: Click on all answers
             try
             {
+                // try and get the actual numbers instead of hardcoding it
                 for (int i = 0; i < 5; i++)
                 {
                     for (int j = 0; j < answerElements.Count; j++)
@@ -168,7 +143,7 @@ public class BingFunctions
         punchCardElement.Click();
         _driver.SwitchTo().Window(_driver.WindowHandles.Last());
 
-        var checklistElements = _driver.FindElements(By.TagName("b"));
+        var checklistElements = _driver.FindElements(By.CssSelector("div.btn-primary.btn.win-color-border-0.card-button-height.pull-left.margin-right-24.padding-left-24.padding-right-24"));
         foreach (var element in checklistElements)
         {
             OpenSetOfElements(element, wait);
@@ -182,10 +157,10 @@ public class BingFunctions
             var scriptResult = ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState");
             if (scriptResult.Equals("complete"))
             {
-                string elementText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
-                AnsiConsole.MarkupLine($"ELEMENT CARD: {elementText} [green]Complete[/]");
+                element.Click();
                 driver.SwitchTo().Window(driver.WindowHandles.Last()).Close();
-                driver.SwitchTo().Window(driver.WindowHandles.First());
+                driver.SwitchTo().Window(driver.WindowHandles[1]);
+                // AnsiConsole.MarkupLine($"ELEMENT CARD: {element.Text} [green]Complete[/]");
                 return true;
             }
             else
@@ -205,3 +180,4 @@ public class BingFunctions
         _driver.Quit();
     }
 }
+

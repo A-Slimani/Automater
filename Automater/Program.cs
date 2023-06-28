@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using OpenQA.Selenium.Edge;
+﻿using OpenQA.Selenium.Edge;
 using Spectre.Console;
 
 class Program
 {
     static void Main(string[] args)
     {
-        // come back to this later
+        // come back to this later - Do I even want a menu??
         /*
         var bingSelection = AnsiConsole.Prompt(
           new MultiSelectionPrompt<string>()
@@ -22,20 +21,8 @@ class Program
         );
         */
 
-        var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
-        var configuration = builder.Build();
-
-        // var profileDirectory = @"C:\\Users\\aboud\\AppData\\Local\\Microsoft\\Edge\\User Data";
-
         var edgeOptions = new EdgeOptions();
         edgeOptions.AddExcludedArgument("enable-logging");
-        edgeOptions.AddUserProfilePreference("profile.default_content_setting_values.popups", 0);
-        edgeOptions.AddArgument("--disable-features=WindowsAccountsConsent");
-        edgeOptions.AddArgument("--disable-features=EnableEphemeralFlashPermission");
-        edgeOptions.AddArgument("--disable-features=PreloadMediaEngagementData");
-        edgeOptions.AddArgument("--profile-directory=Default");
-        // edgeOptions.AddArgument($"user-data-dir={profileDirectory}");
-        // edgeOptions.AddArgument($"--profile-directory=Default");
         var driver = new EdgeDriver(edgeOptions);
         var bingFunctions = new BingFunctions(driver);
 
@@ -52,5 +39,17 @@ class Program
             AnsiConsole.WriteException(ex);
         }
 
+        // testing code
+        /*
+        string url = "https://rewards.bing.com/dashboard/ENAU_pcparent_FY23Gaming_punchcard";
+
+        driver.Navigate().GoToUrl(url);
+        var cardElements = driver.FindElements(By.CssSelector("div.btn-primary.btn.win-color-border-0.card-button-height.pull-left.margin-right-24.padding-left-24.padding-right-24"));
+        foreach (var cardElement in cardElements)
+        {
+            Console.WriteLine(cardElement.Text);
+        }
+        */
     }
 }
+
