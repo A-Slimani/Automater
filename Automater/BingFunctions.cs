@@ -21,6 +21,38 @@ public class BingFunctions
         _driver = driver;
     }
 
+    public void AutomatedSearches()
+    {
+        var lines = File.ReadAllLines(WordListFilePath);
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+        int remainingPoints = BingElements.GetRemainingPoints(_driver);
+        while (remainingPoints > 0)
+        {
+            _driver.Navigate().GoToUrl(BingUrl);
+
+            var randomWord = lines[new Random().Next(lines.Length)];
+
+            AnsiConsole.MarkupLine($"Searching for: [yellow]{randomWord}[/]");
+
+            try
+            {
+                var searchBar = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("sb_form_q")));
+                searchBar.Clear();
+                searchBar.SendKeys(randomWord);
+                searchBar.Submit();
+                wait.Until(ExpectedConditions.TitleContains(randomWord));
+                remainingPoints--;
+
+                if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingPoints(_driver);
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.WriteException(ex);
+            }
+        }
+    }
+
     public void ActivateRewardCards()
     {
         _driver.Navigate().GoToUrl(RewardsUrl);
@@ -42,7 +74,7 @@ public class BingFunctions
             answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
 
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            OpenSetOfElements(element, wait);
+            BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.RewardCard);
         }
     }
 
@@ -100,38 +132,6 @@ public class BingFunctions
         _driver.SwitchTo().Window(handles[0]);
     }
 
-    public void AutomatedSearches()
-    {
-        var lines = File.ReadAllLines(WordListFilePath);
-        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-
-        int remainingPoints = BingElements.GetRemainingPoints(_driver);
-        while (remainingPoints > 0)
-        {
-            _driver.Navigate().GoToUrl(BingUrl);
-
-            var randomWord = lines[new Random().Next(lines.Length)];
-
-            AnsiConsole.MarkupLine($"Searching for: [yellow]{randomWord}[/]");
-
-            try
-            {
-                var searchBar = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("sb_form_q")));
-                searchBar.Clear();
-                searchBar.SendKeys(randomWord);
-                searchBar.Submit();
-                wait.Until(ExpectedConditions.TitleContains(randomWord));
-                remainingPoints--;
-
-                if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingPoints(_driver);
-            }
-            catch (Exception ex)
-            {
-                AnsiConsole.WriteException(ex);
-            }
-        }
-    }
-
     public void ActivateQuestAndPunchCards()
     {
         AnsiConsole.MarkupLine("[yellow]Starting Punch Cards... [/]");
@@ -146,29 +146,8 @@ public class BingFunctions
         var checklistElements = _driver.FindElements(By.CssSelector("div.btn-primary.btn.win-color-border-0.card-button-height.pull-left.margin-right-24.padding-left-24.padding-right-24"));
         foreach (var element in checklistElements)
         {
-            OpenSetOfElements(element, wait);
+            BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.PunchCard);
         }
-    }
-
-    private void OpenSetOfElements(IWebElement element, WebDriverWait wait)
-    {
-        wait.Until(driver =>
-        {
-            var scriptResult = ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState");
-            if (scriptResult.Equals("complete"))
-            {
-                element.Click();
-                driver.SwitchTo().Window(driver.WindowHandles.Last()).Close();
-                driver.SwitchTo().Window(driver.WindowHandles[1]);
-                // AnsiConsole.MarkupLine($"ELEMENT CARD: {element.Text} [green]Complete[/]");
-                return true;
-            }
-            else
-            {
-                AnsiConsole.MarkupLine($"{element.Text} [red]Failed[/]");
-                return false;
-            }
-        });
     }
 
     public void CloseSelenium(int seconds)
