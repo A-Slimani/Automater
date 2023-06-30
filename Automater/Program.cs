@@ -22,6 +22,15 @@ class Program
             bingFunctions.CloseSelenium(15);
             AnsiConsole.WriteException(ex);
         }
+
+        /*
+        driver.Navigate().GoToUrl("https://www.bing.com/search?q=Famous%20Asian%20cities&rnoreward=1&mkt=EN-AU&FORM=ML12JG&skipopalnative=true&rqpiodemo=1&filters=BTEPOKey:%22REWARDSQUIZ_ENAU_ThursdayBonus_20230629%22%20BTROID:%22Gamification_DailySet_ENAU_20230629_Child2%22%20BTROEC:%2210%22%20BTROMC:%2230%22");
+        var earnedPoints = int.Parse(driver.FindElement(By.ClassName("rqECredits")).Text);
+        var totalPoints = int.Parse(driver.FindElement(By.ClassName("rqMCredits")).Text);
+
+        Console.WriteLine(earnedPoints);
+        Console.WriteLine(totalPoints);
+        */
     }
 }
 
