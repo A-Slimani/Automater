@@ -50,7 +50,7 @@ namespace Automater
 
         public static void AnswerQuestions(IWebDriver driver)
         {
-            // Phase 1: Click on the Start Quiz button
+            // Phase 1: Click on the Start Quiz button if it exists
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
             try
             {
@@ -67,7 +67,7 @@ namespace Automater
             string[] answerElementsClasses = { "bt_cardText", "rqOption", "btOptionCard" };
             string currentCSSTag = answerElementsClasses[0];
             answerElements = driver.FindElements(By.ClassName(answerElementsClasses[0]));
-            int count = 1;
+            int count = 1; // why does this start with 1
             while (answerElements.Count == 0)
             {
                 answerElements = driver.FindElements(By.ClassName(answerElementsClasses[count]));
@@ -75,21 +75,28 @@ namespace Automater
                 count++;
             }
 
-            // Phase 3: Click on all answers
-            try
+            if (count != 1)
             {
-                var earnedPoints = int.Parse(driver.FindElement(By.ClassName("rqECredits")).Text);
-                var totalPoints = int.Parse(driver.FindElement(By.ClassName("rqMCredits")).Text);
-                for (int i = 0; i < (totalPoints / earnedPoints); i++)
+                // Phase 3: Click on all answers
+                try
                 {
-                    for (int j = 0; j < answerElements.Count; j++)
+                    var earnedPoints = int.Parse(driver.FindElement(By.ClassName("rqECredits")).Text);
+                    var totalPoints = int.Parse(driver.FindElement(By.ClassName("rqMCredits")).Text);
+                    for (int i = 0; i < (totalPoints / earnedPoints); i++)
                     {
-                        answerElements = driver.FindElements(By.ClassName(currentCSSTag));
-                        driver.ExecuteJavaScript("arguments[0].click()", answerElements[j]);
+                        for (int j = 0; j < answerElements.Count; j++)
+                        {
+                            answerElements = driver.FindElements(By.ClassName(currentCSSTag));
+                            driver.ExecuteJavaScript("arguments[0].click()", answerElements[j]);
+                        }
                     }
                 }
+                catch
+                {
+                    AnsiConsole.MarkupLine("[yellow]Quiz Complete...[/]");
+                }
             }
-            catch
+            else
             {
                 AnsiConsole.MarkupLine("[yellow]Quiz Complete...[/]");
             }
