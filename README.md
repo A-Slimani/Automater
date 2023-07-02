@@ -12,11 +12,11 @@ App for automating BING rewards
   
 ## Features to add
 - Automated Mobile searches
-- Refractor code
-	- Find a way to reuse shared code
-		- Somewhat done could still be improved
 
 ## Improvements
 - Fix opened quiz: will just stay stuck and not answer
 	- This should be fixed now
+- Refractor code
+	- Find a way to reuse shared code
+		- Somewhat done could still be improved
 
