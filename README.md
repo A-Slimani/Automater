@@ -11,7 +11,6 @@ App for automating BING rewards
 - Partially working punch cards
   
 ## Features to add
-- Automate question / trivia cards
 - Automated Mobile searches
 - Refractor code
 	- Find a way to reuse shared code
