@@ -39,7 +39,6 @@ public class BingFunctions
 		// need to login here
 		var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 		var emailInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input[type='email']")));
-		// var emailInput = _driver.FindElement(By.CssSelector("input[type='email']"));
 		emailInput.SendKeys(data?.username);
 
 		// var nextButton = wait.Until(ExpectedConditions.ElementToBeClickable());
