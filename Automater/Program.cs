@@ -7,11 +7,13 @@ class Program
     {
         var edgeOptions = new EdgeOptions();
         edgeOptions.AddExcludedArgument("enable-logging");
+        // edgeOptions.AddArgument("-inprivate");
         var driver = new EdgeDriver(edgeOptions);
         var bingFunctions = new BingFunctions(driver);
 
         try
         {
+            // bingFunctions.RewardsLogin();
             bingFunctions.AutomatedSearches();
             bingFunctions.ActivateRewardCards();
             bingFunctions.ActivateQuestAndPunchCards();

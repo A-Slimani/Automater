@@ -20,6 +20,12 @@ public class BingFunctions
         _driver = driver;
     }
 
+    public void RewardsLogin()
+    {
+        _driver.Navigate().GoToUrl(BingUrl);
+
+    }
+
     public void AutomatedSearches()
     {
         var lines = File.ReadAllLines(WordListFilePath);
