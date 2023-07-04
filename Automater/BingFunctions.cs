@@ -4,126 +4,147 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using Spectre.Console;
+using System.Text.Json;
 
 using System.Text.RegularExpressions;
 
 public class BingFunctions
 {
-    private const string BingUrl = "https://bing.com";
-    private const string RewardsUrl = "https://rewards.bing.com";
-    private static readonly string WordListFilePath = Path.Combine(Directory.GetCurrentDirectory(), "word_list.txt");
 
-    private readonly IWebDriver _driver;
+	private class Login
+	{
+		public string? username { get; set; }
+		public string? password { get; set; }
+	}
 
-    public BingFunctions(IWebDriver driver)
-    {
-        _driver = driver;
-    }
+	private const string BingUrl = "https://bing.com";
+	private const string RewardsUrl = "https://rewards.bing.com";
+	private static readonly string WordListFilePath = Path.Combine(Directory.GetCurrentDirectory(), "word_list.txt");
 
-    public void RewardsLogin()
-    {
-        _driver.Navigate().GoToUrl(BingUrl);
+	private readonly IWebDriver _driver;
 
-    }
+	public BingFunctions(IWebDriver driver)
+	{
+		_driver = driver;
+	}
 
-    public void AutomatedSearches()
-    {
-        var lines = File.ReadAllLines(WordListFilePath);
-        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+	public void RewardsLogin()
+	{
+		_driver.Navigate().GoToUrl(RewardsUrl);
 
-        int remainingPoints = BingElements.GetRemainingPoints(_driver);
-        while (remainingPoints > 0)
-        {
-            _driver.Navigate().GoToUrl(BingUrl);
+		// get login values
+		string json = File.ReadAllText("./logins.json");
+		var data = JsonSerializer.Deserialize<Login>(json);
 
-            var randomWord = lines[new Random().Next(lines.Length)];
+		// need to login here
+		var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+		var emailInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input[type='email']")));
+		// var emailInput = _driver.FindElement(By.CssSelector("input[type='email']"));
+		emailInput.SendKeys(data?.username);
 
-            AnsiConsole.MarkupLine($"Searching for: [yellow]{randomWord}[/]");
+		// var nextButton = wait.Until(ExpectedConditions.ElementToBeClickable());
 
-            try
-            {
-                var searchBar = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("sb_form_q")));
-                searchBar.Clear();
-                searchBar.SendKeys(randomWord);
-                searchBar.Submit();
-                wait.Until(ExpectedConditions.TitleContains(randomWord));
-                remainingPoints--;
 
-                if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingPoints(_driver);
-            }
-            catch (Exception ex)
-            {
-                AnsiConsole.WriteException(ex);
-            }
-        }
-    }
+	}
 
-    public void ActivateRewardCards()
-    {
-        _driver.Navigate().GoToUrl(RewardsUrl);
+	public void AutomatedSearches()
+	{
+		var lines = File.ReadAllLines(WordListFilePath);
+		var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 
-        var cardElements = _driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
-        var incompletedCards = BingElements.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
+		int remainingPoints = BingElements.GetRemainingPoints(_driver);
+		while (remainingPoints > 0)
+		{
+			_driver.Navigate().GoToUrl(BingUrl);
 
-        var actions = new Actions(_driver);
-        foreach (var element in incompletedCards)
-        {
-            actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
+			var randomWord = lines[new Random().Next(lines.Length)];
 
-            string cardNameText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
-            var questionCardRegex = new Regex("(quiz|question|that?)", RegexOptions.IgnoreCase);
+			AnsiConsole.MarkupLine($"Searching for: [yellow]{randomWord}[/]");
 
-            if (questionCardRegex.IsMatch(cardNameText)) ActivateQuestionCard();
+			try
+			{
+				var searchBar = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("sb_form_q")));
+				searchBar.Clear();
+				searchBar.SendKeys(randomWord);
+				searchBar.Submit();
+				wait.Until(ExpectedConditions.TitleContains(randomWord));
+				remainingPoints--;
 
-            var answersText = _driver.FindElements(By.ClassName("bt_cardText"));
-            answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
+				if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingPoints(_driver);
+			}
+			catch (Exception ex)
+			{
+				AnsiConsole.WriteException(ex);
+			}
+		}
+	}
 
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.RewardCard);
-        }
-    }
+	public void ActivateRewardCards()
+	{
+		_driver.Navigate().GoToUrl(RewardsUrl);
 
-    private void ActivateQuestionCard()
-    {
-        var handles = _driver.WindowHandles;
-        _driver.SwitchTo().Window(handles[1]);
+		var cardElements = _driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
+		var incompletedCards = BingElements.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
 
-        AnsiConsole.MarkupLine("Starting [blue]Quiz Element[/]");
+		var actions = new Actions(_driver);
+		foreach (var element in incompletedCards)
+		{
+			actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
 
-        BingHelperFunctions.AnswerQuestions(_driver);
+			string cardNameText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
+			var questionCardRegex = new Regex("(quiz|question|that?)", RegexOptions.IgnoreCase);
 
-        _driver.SwitchTo().Window(handles[0]);
-    }
+			if (questionCardRegex.IsMatch(cardNameText)) ActivateQuestionCard();
 
-    public void ActivateQuestAndPunchCards()
-    {
-        AnsiConsole.MarkupLine("[yellow]Starting Punch Cards... [/]");
-        _driver.Navigate().GoToUrl(RewardsUrl);
+			var answersText = _driver.FindElements(By.ClassName("bt_cardText"));
+			answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
 
-        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+			var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+			BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.RewardCard);
+		}
+	}
 
-        var punchCardElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("h1[mee-heading='heading']")));
-        punchCardElement.Click();
-        _driver.SwitchTo().Window(_driver.WindowHandles.Last());
+	private void ActivateQuestionCard()
+	{
+		var handles = _driver.WindowHandles;
+		_driver.SwitchTo().Window(handles[1]);
 
-        var checklistElements = _driver.FindElements(By.CssSelector("div.btn-primary.btn.win-color-border-0.card-button-height.pull-left.margin-right-24.padding-left-24.padding-right-24"));
-        foreach (var element in checklistElements)
-        {
-            var questionRegex = new Regex("(quiz|question|play|that?)", RegexOptions.IgnoreCase);
-            if (questionRegex.IsMatch(element.Text))
-            {
-                BingHelperFunctions.AnswerQuestions(_driver);
-            }
-            BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.PunchCard);
-        }
-    }
+		AnsiConsole.MarkupLine("Starting [blue]Quiz Element[/]");
 
-    public void CloseSelenium(int seconds)
-    {
-        AnsiConsole.MarkupLine($"[aqua]POINTS EARNED TODAY:[/] [green]{BingElements.GetPointsEarnedToday(_driver)}[/]");
-        Console.WriteLine($"Rewards Automater complete. Program will end in {seconds} seconds...");
-        Thread.Sleep(1000 * seconds);
-        _driver.Quit();
-    }
+		BingHelperFunctions.AnswerQuestions(_driver);
+
+		_driver.SwitchTo().Window(handles[0]);
+	}
+
+	public void ActivateQuestAndPunchCards()
+	{
+		AnsiConsole.MarkupLine("[yellow]Starting Punch Cards... [/]");
+		_driver.Navigate().GoToUrl(RewardsUrl);
+
+		var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+		var punchCardElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("h1[mee-heading='heading']")));
+		punchCardElement.Click();
+		_driver.SwitchTo().Window(_driver.WindowHandles.Last());
+
+		var checklistElements = _driver.FindElements(By.CssSelector("div.btn-primary.btn.win-color-border-0.card-button-height.pull-left.margin-right-24.padding-left-24.padding-right-24"));
+		foreach (var element in checklistElements)
+		{
+			var questionRegex = new Regex("(quiz|question|play|that?)", RegexOptions.IgnoreCase);
+			if (questionRegex.IsMatch(element.Text))
+			{
+				BingHelperFunctions.AnswerQuestions(_driver);
+			}
+			BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.PunchCard);
+		}
+	}
+
+	public void CloseSelenium(int seconds)
+	{
+		AnsiConsole.MarkupLine($"[aqua]POINTS EARNED TODAY:[/] [green]{BingElements.GetPointsEarnedToday(_driver)}[/]");
+		Console.WriteLine($"Rewards Automater complete. Program will end in {seconds} seconds...");
+		Thread.Sleep(1000 * seconds);
+		_driver.Quit();
+	}
 }
 
