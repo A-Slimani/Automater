@@ -4,11 +4,19 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using Spectre.Console;
+using System.Text.Json;
 
 using System.Text.RegularExpressions;
 
 public class BingFunctions
 {
+
+    private class Login 
+    {
+        public string? username {get; set;}
+        public string? password {get; set;}
+    }
+
     private const string BingUrl = "https://bing.com";
     private const string RewardsUrl = "https://rewards.bing.com";
     private static readonly string WordListFilePath = Path.Combine(Directory.GetCurrentDirectory(), "word_list.txt");
@@ -18,6 +26,25 @@ public class BingFunctions
     public BingFunctions(IWebDriver driver)
     {
         _driver = driver;
+    }
+
+    public void RewardsLogin() 
+    {
+        _driver.Navigate().GoToUrl(RewardsUrl);
+
+        // get login values
+        string json = File.ReadAllText("./logins.json");
+        var data = JsonSerializer.Deserialize<Login>(json);
+
+        // need to login here
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+        var emailInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input[type='email']")));
+        // var emailInput = _driver.FindElement(By.CssSelector("input[type='email']"));
+        emailInput.SendKeys(data?.username);
+
+        // var nextButton = wait.Until(ExpectedConditions.ElementToBeClickable());
+
+
     }
 
     public void AutomatedSearches()
