@@ -14,10 +14,6 @@ App for automating BING rewards
 - Automated Mobile searches
 - Automated Login -> to fix it on Virtual Machine
 
-## Improvements
-- Fix opened quiz: will just stay stuck and not answer
-	- This should be fixed now
-- Refractor code
-	- Find a way to reuse shared code
-		- Somewhat done could still be improved
+## Fixes
+- Quiz will just close if doesn't have the start quiz button
 
