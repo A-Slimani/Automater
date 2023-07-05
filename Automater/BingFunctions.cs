@@ -28,6 +28,7 @@ public class BingFunctions
 		_driver = driver;
 	}
 
+    // dont really need this will probably remove it for now
 	public void RewardsLogin()
 	{
 		_driver.Navigate().GoToUrl(RewardsUrl);
@@ -42,8 +43,6 @@ public class BingFunctions
 		emailInput.SendKeys(data?.username);
 
 		// var nextButton = wait.Until(ExpectedConditions.ElementToBeClickable());
-
-
 	}
 
 	public void AutomatedSearches()
