@@ -67,7 +67,7 @@ namespace Automater
             string[] answerElementsClasses = { "bt_cardText", "rqOption", "btOptionCard" };
             string currentCSSTag = answerElementsClasses[0];
             answerElements = driver.FindElements(By.ClassName(answerElementsClasses[0]));
-            int count = 1; // why does this start with 1
+            int count = 1; // to satisfy the while loop expression 
             while (answerElements.Count == 0)
             {
                 answerElements = driver.FindElements(By.ClassName(answerElementsClasses[count]));
@@ -75,14 +75,20 @@ namespace Automater
                 count++;
             }
 
-            if (count != 1)
+            if (answerElements.Count != 1)
             {
                 // Phase 3: Click on all answers
                 try
                 {
-                    var earnedPoints = int.Parse(driver.FindElement(By.ClassName("rqECredits")).Text);
-                    var totalPoints = int.Parse(driver.FindElement(By.ClassName("rqMCredits")).Text);
-                    for (int i = 0; i < (totalPoints / earnedPoints); i++)
+                    int totalPoints = int.Parse(driver.FindElement(By.ClassName("rqMCredits")).Text) / 10;
+
+                    if (totalPoints == 0)
+                    {
+                        IList<string> thisOrThatElement = driver.FindElement(By.ClassName("bt_Quefooter")).Text.Split(' ').ToList();
+                        totalPoints = int.Parse(thisOrThatElement[2]);
+                    }
+
+                    for (int i = 0; i < totalPoints; i++)
                     {
                         for (int j = 0; j < answerElements.Count; j++)
                         {

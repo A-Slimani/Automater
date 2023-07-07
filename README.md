@@ -1,19 +1,24 @@
 # Automater
 App for automating BING rewards 
 
+
 ## Current features
 - Automated Bing Searches
-	- Searches depending on how many points are left
+    - Searches depending on how many points are left
 - Automated opening reward cards
-	- Opens each card in a new tab then closes them
+    - Opens each card in a new tab then closes them
 - Automated quiz answering
-	- Can answer quiz questions 
+    - Question quiz answering still buggy
 - Partially working punch cards
   
 ## Features to add
 - Automated Mobile searches
-- Automated Login -> to fix it on Virtual Machine
+- Multiple Account logins
 
-## Fixes
-- Quiz will just close if doesn't have the start quiz button
+## Operational Stuff
+- Run on a docker instance?
+    - Headless? Run the risk of getting b&
+- Use an alt account for it
 
+## Improvements
+- Quiz questions still buggy
