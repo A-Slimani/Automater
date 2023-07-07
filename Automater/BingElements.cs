@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using System.Text.RegularExpressions;
+using Spectre.Console;
 
 namespace Automater
 {
@@ -13,9 +14,8 @@ namespace Automater
             return int.Parse(pointsEarnedToday.Text);
         }
 
-        public static int GetRemainingPoints(IWebDriver driver)
+        public static int GetRemainingSearches(IWebDriver driver)
         {
-
             driver.Navigate().GoToUrl("https://rewards.bing.com");
 
             var pointsBreakDownElement = driver.FindElement(By.Id("dailypointColumnCalltoAction"));
@@ -26,6 +26,8 @@ namespace Automater
             int currentPoints = int.Parse(pcSearchElement.Text.Split('/')[0].Trim()); //  just gets the first number
 
             int remainingSearches = (90 - currentPoints) / 3;
+
+            AnsiConsole.MarkupLine($"[Blue]{remainingSearches}[/] searches remaining...");
 
             return remainingSearches;
         }
