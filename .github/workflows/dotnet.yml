@@ -35,9 +35,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: workflow-test 
+        release_name: Release workflow-test 
         body: | 
-          test
+          workflow-test
         draft: false
         prerelease: false
