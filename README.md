@@ -16,9 +16,7 @@ App for automating BING rewards
 - Multiple Account logins
 
 ## Operational Stuff
-- Run on a docker instance?
-    - Headless? Run the risk of getting b&
-- Use an alt account for it
+- Use Github Actions to automate release
 
 ## Improvements
 - Quiz questions still buggy
