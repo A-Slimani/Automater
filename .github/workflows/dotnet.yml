@@ -41,10 +41,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_NAME: Release ${{ steps.version_number }}
-        RELEASE_TAG: v${{ steps.version_number }}
+        TAG_NAME: v${{ steps.version_number }}
       with:
         release_name: ${{ env.RELEASE_NAME }}
-        release_tag: ${{ env.RELEASE_TAG }}
+        tag_name: ${{ env.TAG_NAME }}
         body: | 
           workflow-test
         draft: false
