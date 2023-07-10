@@ -31,16 +31,20 @@ jobs:
       run: dotnet build 
     
     - name: Get Version Number
+      id: version_number
       run: |
-        pwsh -command "Get-Date -Format \"yyMMdd.HH.ss\""
+        pwsh -command Get-Date -Format "yyMMdd.HH.ss"
 
     - name: Publish to Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_NAME: Release ${{ steps.version_number }}
+        RELEASE_TAG: v${{ steps.version_number }}
       with:
-        release_name: Release workflow-test 
+        release_name: ${{ env.RELEASE_NAME }}
+        release_tag: ${{ env.RELEASE_TAG }}
         body: | 
           workflow-test
         draft: false
