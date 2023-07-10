@@ -31,4 +31,4 @@ jobs:
       run: dotnet build 
 
     - name: Publish to Github
-      uses: A-Slimani/
+      uses: A-Slimani/Automater
