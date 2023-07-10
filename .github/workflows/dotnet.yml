@@ -29,6 +29,10 @@ jobs:
 
     - name: Build
       run: dotnet build 
+    
+    - name: Get Version Number
+      run: |
+        pwsh -command "Get-Date -Format \"yyMMdd.HH.ss\""
 
     - name: Publish to Release
       id: create_release
