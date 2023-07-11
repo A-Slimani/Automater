@@ -29,6 +29,9 @@ jobs:
 
     - name: Build
       run: dotnet build 
+  
+    - name: Publish
+      run: dotnet publish --configuration Release
 
     - name: Publish to Release
       id: create_release
@@ -48,6 +51,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url}}
+        asset_path: ./bin/Release/net7.0/publish
         asset_name: build.zip
 
 
