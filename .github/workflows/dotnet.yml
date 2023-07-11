@@ -34,7 +34,7 @@ jobs:
     - name: Build and Publish
       run: | 
         dotnet publish --configuration Release
-        zip -r ${{ steps.version_number.outputs.stdout }}.zip dist
+        Compress-Archive -Path ./dist -DestinationPath ./${{ steps.version_number.outputs.stdout }}.zip
 
     - name: Publish to Release
       id: create_release
