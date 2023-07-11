@@ -27,24 +27,22 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build
-      run: dotnet build 
-    
-    - name: Publish
-      run: dotnet publish --configuration Release
-    
     - name: Get Version Number
       id: version_number
-      shell: pwsh
-      run: Get-Date -Format "yyMMdd.HH.ss"
+      run: Get-Date -Format "yyMMdd.HH.mm"
+    
+    - name: Build and Publish
+      run: | 
+        dotnet publish --configuration Release
+        zip -r ${{ steps.version_number.outputs.stdout }}.zip dist
 
     - name: Publish to Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_NAME: Release ${{ steps.version_number }}
-        TAG_NAME: v${{ steps.version_number }}
+        RELEASE_NAME: Release ${{ steps.version_number.outputs.stdout }}
+        TAG_NAME: v${{ steps.version_number.outputs.stdout }}
       with:
         release_name: ${{ env.RELEASE_NAME }}
         tag_name: ${{ env.TAG_NAME }}
@@ -59,7 +57,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url}}
-        asset_path: ./bin/Release/net7.0/publish
-        asset_name: build.zip
+        asset_path: D:\a\Automater\Automater\Automater\${{ steps.version_number.outputs.stdout }}.zip
+        asset_name: ${{ steps.version_number.outputs.stdout }}.zip
+        asset_content_type: application/zip
+ 
 
 
