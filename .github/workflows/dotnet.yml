@@ -29,17 +29,25 @@ jobs:
 
     - name: Build
       run: dotnet build 
-  
+    
     - name: Publish
       run: dotnet publish --configuration Release
+    
+    - name: Get Version Number
+      id: version_number
+      run: |
+        pwsh -command Get-Date -Format "yyMMdd.HH.ss"
 
     - name: Publish to Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_NAME: Release ${{ steps.version_number }}
+        TAG_NAME: v${{ steps.version_number }}
       with:
-        release_name: Release workflow-test 
+        release_name: ${{ env.RELEASE_NAME }}
+        tag_name: ${{ env.TAG_NAME }}
         body: | 
           workflow-test
         draft: false
