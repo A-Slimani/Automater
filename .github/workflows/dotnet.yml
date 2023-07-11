@@ -35,8 +35,8 @@ jobs:
     
     - name: Get Version Number
       id: version_number
-      run: |
-        pwsh -command Get-Date -Format "yyMMdd.HH.ss"
+      shell: pwsh
+      run: Get-Date -Format "yyMMdd.HH.ss"
 
     - name: Publish to Release
       id: create_release
