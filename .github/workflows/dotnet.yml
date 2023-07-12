@@ -57,7 +57,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url}}
-        asset_path: D:\a\Automater\Automater\Automater\${{ steps.version_number.outputs.version_number }}.zip
+        asset_path: ./${{ steps.version_number.outputs.version_number }}.zip
         asset_name: ${{ steps.version_number.outputs.version_number }}.zip
         asset_content_type: application/zip
  
