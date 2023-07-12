@@ -34,7 +34,7 @@ jobs:
     - name: Build and Publish
       run: | 
         dotnet publish -c Release -o dist
-        Compress-Archive -Path D:\a\Automater\dist -DestinationPath ./${{ steps.version_number.outputs.version_number }}.zip
+        Compress-Archive -Path D:\a\Automater\Automater\dist -DestinationPath ./${{ steps.version_number.outputs.version_number }}.zip
 
     - name: Publish to Release
       id: create_release
