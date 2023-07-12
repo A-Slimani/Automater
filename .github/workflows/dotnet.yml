@@ -29,19 +29,20 @@ jobs:
 
     - name: Get Version Number
       id: version_number
-      run: Get-Date -Format "yyMMdd.HH.mm"
+      run: echo "::set-output name=version_number::$(Get-Date -Format 'yyMMdd.HH.mm')" 
     
     - name: Build and Publish
       run: | 
-        dotnet publish --configuration Release && Compress-Archive -Path D:\a\Automater -DestinationPath ./${{ steps.version_number.outputs.stdout }}.zip
+        dotnet publish -c Release -o dist
+        Compress-Archive -Path D:\a\Automater -DestinationPath ./${{ steps.version_number.outputs.version_number }}.zip
 
     - name: Publish to Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_NAME: Release ${{ steps.version_number.outputs.stdout }}
-        TAG_NAME: v${{ steps.version_number.outputs.stdout }}
+        RELEASE_NAME: Release ${{ steps.version_number.outputs.version_number }}
+        TAG_NAME: v${{ steps.version_number.outputs.version_number }}
       with:
         release_name: ${{ env.RELEASE_NAME }}
         tag_name: ${{ env.TAG_NAME }}
@@ -56,8 +57,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url}}
-        asset_path: D:\a\Automater\Automater\Automater\${{ steps.version_number.outputs.stdout }}.zip
-        asset_name: ${{ steps.version_number.outputs.stdout }}.zip
+        asset_path: D:\a\Automater\Automater\Automater\${{ steps.version_number.outputs.version_number }}.zip
+        asset_name: ${{ steps.version_number.outputs.version_number }}.zip
         asset_content_type: application/zip
  
 
