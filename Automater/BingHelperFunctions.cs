@@ -23,7 +23,7 @@ namespace Automater
                 {
                     if (type == BingFunctionType.RewardCard)
                     {
-                        string elementText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
+                        string elementText = element.Text.Split(new string[] { "\n" }, StringSplitOptions.None)[1];
                         driver.SwitchTo().Window(driver.WindowHandles.Last()).Close();
                         driver.SwitchTo().Window(driver.WindowHandles.First());
                         AnsiConsole.MarkupLine($"ELEMENT CARD: {elementText} [green]Complete[/]");

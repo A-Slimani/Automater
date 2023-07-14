@@ -112,7 +112,7 @@ public class BingFunctions
     {
       actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
 
-      string cardNameText = element.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None)[1];
+      string cardNameText = element.Text.Split(new string[] { "\n" }, StringSplitOptions.None)[1];
       var questionCardRegex = new Regex("(quiz|question|that?)", RegexOptions.IgnoreCase);
 
       if (questionCardRegex.IsMatch(cardNameText)) ActivateQuestionCard();
