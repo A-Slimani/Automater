@@ -33,7 +33,7 @@ public class BingFunctions
     _driver.Navigate().GoToUrl(RewardsUrl);
 
     // get login values
-    string json = File.ReadAllText("./logins.json");
+    string? json = File.ReadAllText("./logins.json");
     var data = JsonSerializer.Deserialize<Login>(json);
 
     if (data != null)
