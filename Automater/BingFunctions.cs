@@ -43,24 +43,24 @@ public class BingFunctions
       emailInput.SendKeys(data?.email);
 
       var nextButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("idSIButton9")));
-			nextButton.Click();
+      nextButton.Click();
 
       var passwordInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input[type='password']")));
-			passwordInput.SendKeys(data?.password);
+      passwordInput.SendKeys(data?.password);
 
       nextButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("idSIButton9")));
-			nextButton.Click();
+      nextButton.Click();
 
-			var staySignedInButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("idBtn_Back")));
-			staySignedInButton.Click();
+      var staySignedInButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("idBtn_Back")));
+      staySignedInButton.Click();
 
-			return true;
+      return true;
     }
-		else 
-		{
-			AnsiConsole.MarkupLine("[red] Missing login details[/]");
-			return false;
-		}
+    else
+    {
+      AnsiConsole.MarkupLine("[red] Missing login details[/]");
+      return false;
+    }
   }
 
   public void AutomatedSearches()
@@ -69,6 +69,23 @@ public class BingFunctions
 
     var lines = File.ReadAllLines(WordListFilePath);
     var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+    _driver.Navigate().GoToUrl(BingUrl);
+
+    try
+    {
+      AnsiConsole.MarkupLine("Login check...");
+      var signInElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("id_s")));
+      if (signInElement.Text == "Sign in")
+      {
+        signInElement.Click();
+      }
+      AnsiConsole.MarkupLine("Search login success!");
+    }
+    catch
+    {
+      AnsiConsole.MarkupLine("Already Logged in...");
+    }
 
     int remainingPoints = BingElements.GetRemainingSearches(_driver);
 
