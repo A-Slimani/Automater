@@ -156,25 +156,32 @@ public class BingFunctions
 
   public void ActivateQuestAndPunchCards()
   {
-    AnsiConsole.MarkupLine("[yellow]Starting Punch Cards... [/]");
+    AnsiConsole.MarkupLine("[aqua]Starting Punch Cards... [/]");
     _driver.Navigate().GoToUrl(RewardsUrl);
 
     var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 
-    // doesnt seem to work right now, will not open the element at all
-    var punchCardElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("h1[mee-heading='heading']")));
-    punchCardElement.Click();
-    _driver.SwitchTo().Window(_driver.WindowHandles.Last());
-
-    var checklistElements = _driver.FindElements(By.CssSelector("div.btn-primary.btn.win-color-border-0.card-button-height.pull-left.margin-right-24.padding-left-24.padding-right-24"));
-    foreach (var element in checklistElements)
+    try
     {
-      var questionRegex = new Regex("(quiz|question|play|that?)", RegexOptions.IgnoreCase);
-      if (questionRegex.IsMatch(element.Text))
+      // doesnt seem to work right now, will not open the element at all
+      var punchCardElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("h1[mee-heading='heading']")));
+      punchCardElement.Click();
+      _driver.SwitchTo().Window(_driver.WindowHandles.Last());
+
+      var checklistElements = _driver.FindElements(By.CssSelector("div.btn-primary.btn.win-color-border-0.card-button-height.pull-left.margin-right-24.padding-left-24.padding-right-24"));
+      foreach (var element in checklistElements)
       {
-        BingHelperFunctions.AnswerQuestions(_driver);
+        var questionRegex = new Regex("(quiz|question|play|that?)", RegexOptions.IgnoreCase);
+        if (questionRegex.IsMatch(element.Text))
+        {
+          BingHelperFunctions.AnswerQuestions(_driver);
+        }
+        BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.PunchCard);
       }
-      BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.PunchCard);
+    }
+    catch
+    {
+      AnsiConsole.MarkupLine("[red]Punchcard Element not found...[/]");
     }
   }
 
