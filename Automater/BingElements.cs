@@ -14,18 +14,34 @@ namespace Automater
       return int.Parse(pointsEarnedToday.Text);
     }
 
-    public static int GetRemainingSearches(IWebDriver driver)
+    public static int GetRemainingSearches(IWebDriver driver, ClientType type)
     {
       driver.Navigate().GoToUrl("https://rewards.bing.com");
 
       var pointsBreakDownElement = driver.FindElement(By.Id("dailypointColumnCalltoAction"));
       pointsBreakDownElement.Click();
 
-      var pcSearchElement = driver.FindElement(By.XPath("//p[@class=\"pointsDetail c-subheading-3 ng-binding\"]"));
+      var searchElements = driver.FindElements(By.XPath("//p[@class=\"pointsDetail c-subheading-3 ng-binding\"]"));
 
-      int currentPoints = int.Parse(pcSearchElement.Text.Split('/')[0].Trim()); //  just gets the first number
+      /*
+      foreach (var e in searchElements)
+      {
+        var x = e.Text.Split('/');
+        foreach (var y in x)
+        {
+          AnsiConsole.MarkupLine(y);
+        }
+      }
+      */
 
-      int remainingSearches = (90 - currentPoints) / 3;
+      int currentPoints = type == ClientType.Desktop
+        ? int.Parse(searchElements[0].Text.Split('/')[0].Trim()) 
+        : int.Parse(searchElements[1].Text.Split('/')[0].Trim()); 
+      
+
+      int remainingSearches = type == ClientType.Desktop 
+        ? (90 - int.Parse(searchElements[0].Text.Split('/')[1])) / 3
+        : (60 - int.Parse(searchElements[1].Text.Split('/')[1])) / 3;
 
       AnsiConsole.MarkupLine($"[Blue]{remainingSearches}[/] searches remaining...");
 

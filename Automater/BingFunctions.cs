@@ -36,7 +36,7 @@ public class BingFunctions
     string json = File.ReadAllText("./logins.json");
     var data = JsonSerializer.Deserialize<Login>(json);
 
-    if (data?.email != null && data?.password != null) 
+    if (data?.email != null && data?.password != null)
     {
       AnsiConsole.MarkupLine($"logging in with email: [green]{data.email}[/]");
 
@@ -65,9 +65,9 @@ public class BingFunctions
     }
   }
 
-  public void AutomatedSearches()
+  public void AutomatedSearches(ClientType type)
   {
-    AnsiConsole.MarkupLine("[aqua]Starting Automatic Searches...[/]");
+    AnsiConsole.MarkupLine($"[aqua]Starting Automatic Searches for {type}...[/]");
 
     var lines = File.ReadAllLines(WordListFilePath);
     var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
@@ -77,19 +77,31 @@ public class BingFunctions
     try
     {
       AnsiConsole.MarkupLine("Login check...");
-      var signInElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("id_s")));
-      if (signInElement.Text == "Sign in")
+
+      if (type == ClientType.Desktop)
       {
+        var signInElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("id_s")));
+        if (signInElement.Text == "Sign in")
+        {
+          signInElement.Click();
+        }
+        AnsiConsole.MarkupLine("Search login success!");
+      }
+      else if(type == ClientType.Mobile)
+      {
+        var hamburgerElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("mHamburger")));
+        hamburgerElement.Click();
+
+        var signInElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("hb_a")));
         signInElement.Click();
       }
-      AnsiConsole.MarkupLine("Search login success!");
     }
     catch
     {
       AnsiConsole.MarkupLine("Already Logged in...");
     }
 
-    int remainingPoints = BingElements.GetRemainingSearches(_driver);
+    int remainingPoints = BingElements.GetRemainingSearches(_driver, type); 
 
     while (remainingPoints > 0)
     {
@@ -108,7 +120,7 @@ public class BingFunctions
         wait.Until(ExpectedConditions.TitleContains(randomWord));
         remainingPoints--;
 
-        if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingSearches(_driver);
+        if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingSearches(_driver, type);
       }
       catch (Exception ex)
       {
@@ -140,7 +152,7 @@ public class BingFunctions
       answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
 
       var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-      BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.RewardCard);
+      BingHelperFunctions.OpenSetOfElements(element, wait, BingCardType.RewardCard);
     }
   }
 
@@ -178,7 +190,7 @@ public class BingFunctions
         {
           BingHelperFunctions.AnswerQuestions(_driver);
         }
-        BingHelperFunctions.OpenSetOfElements(element, wait, BingFunctionType.PunchCard);
+        BingHelperFunctions.OpenSetOfElements(element, wait, BingCardType.PunchCard);
       }
     }
     catch

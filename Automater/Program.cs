@@ -1,39 +1,63 @@
 ﻿using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Chrome;
 using Spectre.Console;
-using OpenQA.Selenium;
+using Automater;
 
 class Program
 {
   static void Main(string[] args)
   {
-		var edgeOptions = new EdgeOptions();
-		edgeOptions.AddExcludedArgument("enable-logging");
-		var driver = new EdgeDriver(edgeOptions);
-		var bingFunctions = new BingFunctions(driver);
+    // DESKTOP
+    var edgeDesktopOptions = new EdgeOptions();
+    edgeDesktopOptions.AddExcludedArgument("enable-logging");
+    var desktopDriver = new EdgeDriver(edgeDesktopOptions);
+    var bingDesktopFunctions = new BingFunctions(desktopDriver);
 
     try
     {
-      if (bingFunctions.RewardsLogin())
+      if (bingDesktopFunctions.RewardsLogin())
       {
-        bingFunctions.AutomatedSearches();
-        bingFunctions.ActivateRewardCards();
-        bingFunctions.ActivateQuestAndPunchCards();
+        bingDesktopFunctions.AutomatedSearches(ClientType.Desktop);
+        bingDesktopFunctions.ActivateRewardCards();
+        bingDesktopFunctions.ActivateQuestAndPunchCards();
       }
-      bingFunctions.CloseSelenium(15);
+      bingDesktopFunctions.CloseSelenium(15);
     }
     catch (Exception ex)
     {
-      bingFunctions.CloseSelenium(15);
+      bingDesktopFunctions.CloseSelenium(15);
       AnsiConsole.WriteException(ex);
     }
+
+    // MOBILE
+    var edgeMobileOptions = new EdgeOptions();
+    edgeMobileOptions.AddExcludedArgument("enable-logging");
+    edgeMobileOptions.AddArgument(
+      "--user-agent=Mozilla/5.0 (Linux; Android 11; SM-G998B Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.120 Mobile Safari/537.36"
+    );
+    var mobileDriver = new EdgeDriver(edgeMobileOptions);
+    var bingMobileFunctions = new BingFunctions(mobileDriver);
+
+    try
+    {
+      if (bingMobileFunctions.RewardsLogin())
+      {
+        bingMobileFunctions.AutomatedSearches(ClientType.Mobile);
+      }
+      bingMobileFunctions.CloseSelenium(15);
+    }
+    catch (Exception ex)
+    {
+      bingMobileFunctions.CloseSelenium(15);
+      AnsiConsole.WriteException(ex);
+    }
+
 
     /*
 		driver.Navigate().GoToUrl("https://www.bing.com/search?q=test&form=QBLH&sp=-1&lq=0&pq=tes&sc=10-3&qs=n&sk=&cvid=76F1B249122840479379B9E2F249D038&ghsh=0&ghacc=0&ghpl=");
 		var punchcardText = driver.FindElement(By.Id("id_a"));
     Console.WriteLine(punchcardText.GetAttribute("value"));
     */
-    
+
   }
 }
 

@@ -6,7 +6,7 @@ using Spectre.Console;
 
 namespace Automater
 {
-  public enum BingFunctionType
+  public enum BingCardType
   {
     RewardCard,
     PunchCard
@@ -14,14 +14,14 @@ namespace Automater
 
   public static class BingHelperFunctions
   {
-    public static void OpenSetOfElements(IWebElement element, WebDriverWait wait, BingFunctionType type)
+    public static void OpenSetOfElements(IWebElement element, WebDriverWait wait, BingCardType type)
     {
       wait.Until(driver =>
       {
         var scriptResult = ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState");
         if (scriptResult.Equals("complete"))
         {
-          if (type == BingFunctionType.RewardCard)
+          if (type == BingCardType.RewardCard)
           {
             string elementText = element.Text.Split(new string[] { "\n" }, StringSplitOptions.None)[1];
             driver.SwitchTo().Window(driver.WindowHandles.Last()).Close();
