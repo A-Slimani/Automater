@@ -33,11 +33,13 @@ public class BingFunctions
     _driver.Navigate().GoToUrl(RewardsUrl);
 
     // get login values
-    string? json = File.ReadAllText("./logins.json");
+    string json = File.ReadAllText("./logins.json");
     var data = JsonSerializer.Deserialize<Login>(json);
 
-    if (data != null)
+    if (data?.email != null && data?.password != null) 
     {
+      AnsiConsole.MarkupLine($"logging in with email: [green]{data.email}[/]");
+
       var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
       var emailInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input[type='email']")));
       emailInput.SendKeys(data?.email);

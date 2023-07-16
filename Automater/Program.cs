@@ -19,8 +19,8 @@ class Program
         bingFunctions.AutomatedSearches();
         bingFunctions.ActivateRewardCards();
         bingFunctions.ActivateQuestAndPunchCards();
-        bingFunctions.CloseSelenium(15);
       }
+      bingFunctions.CloseSelenium(15);
     }
     catch (Exception ex)
     {
