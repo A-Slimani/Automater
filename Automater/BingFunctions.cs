@@ -1,4 +1,5 @@
 ﻿using Automater;
+using Microsoft.Extensions.Logging;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
@@ -22,10 +23,12 @@ public class BingFunctions
   private static readonly string WordListFilePath = Path.Combine(Directory.GetCurrentDirectory(), "word_list.txt");
 
   private readonly IWebDriver _driver;
+  private readonly Serilog.ILogger _logger;
 
-  public BingFunctions(IWebDriver driver)
+  public BingFunctions(IWebDriver driver, Serilog.ILogger logger)
   {
     _driver = driver;
+    _logger = logger;
   }
 
   public bool RewardsLogin()
@@ -38,7 +41,7 @@ public class BingFunctions
 
     if (data?.email != null && data?.password != null)
     {
-      AnsiConsole.MarkupLine($"logging in with email: [green]{data.email}[/]");
+      _logger.Information($"logging in with email: {data.email}");
 
       var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
       var emailInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input[type='email']")));
@@ -60,14 +63,14 @@ public class BingFunctions
     }
     else
     {
-      AnsiConsole.MarkupLine("[red] Missing login details[/]");
+      _logger.Information("Missing login details");
       return false;
     }
   }
 
   public void AutomatedSearches(ClientType type)
   {
-    AnsiConsole.MarkupLine($"[aqua]Starting Automatic Searches for {type}...[/]");
+    _logger.Information($"Starting Automatic Searches for {type}...");
 
     var lines = File.ReadAllLines(WordListFilePath);
     var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
@@ -76,7 +79,7 @@ public class BingFunctions
 
     try
     {
-      AnsiConsole.MarkupLine("Login check...");
+      _logger.Information("Login check...");
 
       if (type == ClientType.Desktop)
       {
@@ -85,7 +88,7 @@ public class BingFunctions
         {
           signInElement.Click();
         }
-        AnsiConsole.MarkupLine("Search login success!");
+        _logger.Information("Search login success!");
       }
       else if(type == ClientType.Mobile)
       {
@@ -98,10 +101,10 @@ public class BingFunctions
     }
     catch
     {
-      AnsiConsole.MarkupLine("Already Logged in...");
+      _logger.Information("Already Logged in...");
     }
 
-    int remainingPoints = BingElements.GetRemainingSearches(_driver, type); 
+    int remainingPoints = BingElements.GetRemainingSearches(_driver, type, _logger); 
 
     while (remainingPoints > 0)
     {
@@ -120,18 +123,18 @@ public class BingFunctions
         wait.Until(ExpectedConditions.TitleContains(randomWord));
         remainingPoints--;
 
-        if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingSearches(_driver, type);
+        if (remainingPoints == 0) remainingPoints = BingElements.GetRemainingSearches(_driver, type, _logger);
       }
       catch (Exception ex)
       {
-        AnsiConsole.WriteException(ex);
+        _logger.Error(ex.ToString());
       }
     }
   }
 
   public void ActivateRewardCards()
   {
-    AnsiConsole.MarkupLine("[aqua]Starting Reward Cards...[/]");
+    _logger.Information("Starting Reward Cards...");
 
     _driver.Navigate().GoToUrl(RewardsUrl);
 
@@ -154,6 +157,8 @@ public class BingFunctions
       var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
       BingHelperFunctions.OpenSetOfElements(element, wait, BingCardType.RewardCard);
     }
+
+    _logger.Information("Reward Cards complete...");
   }
 
   private void ActivateQuestionCard()
@@ -161,7 +166,7 @@ public class BingFunctions
     var handles = _driver.WindowHandles;
     _driver.SwitchTo().Window(handles[1]);
 
-    AnsiConsole.MarkupLine("Starting [blue]Quiz Element[/]");
+    _logger.Information("Starting Quiz Element");
 
     BingHelperFunctions.AnswerQuestions(_driver);
 
@@ -170,7 +175,7 @@ public class BingFunctions
 
   public void ActivateQuestAndPunchCards()
   {
-    AnsiConsole.MarkupLine("[aqua]Starting Punch Cards... [/]");
+    _logger.Information("Starting Punch Cards...");
     _driver.Navigate().GoToUrl(RewardsUrl);
 
     var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
@@ -195,13 +200,13 @@ public class BingFunctions
     }
     catch
     {
-      AnsiConsole.MarkupLine("[red]Punchcard Element not found...[/]");
+      _logger.Information("Punchcard Element not found...");
     }
   }
 
   public void CloseSelenium(int seconds)
   {
-    AnsiConsole.MarkupLine($"[aqua]POINTS EARNED TODAY:[/] [green]{BingElements.GetPointsEarnedToday(_driver)}[/]");
+    _logger.Information($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(_driver)}");
     Console.WriteLine($"Rewards Automater complete. Program will end in {seconds} seconds...");
     Thread.Sleep(1000 * seconds);
     _driver.Quit();

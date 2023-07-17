@@ -1,16 +1,26 @@
 ﻿using OpenQA.Selenium.Edge;
 using Spectre.Console;
 using Automater;
+using Serilog;
+using System;
 
 class Program
 {
   static void Main(string[] args)
   {
+    // LOGGING
+    string date = DateTime.Now.ToString("ddMMyy");
+
+    Log.Logger = new LoggerConfiguration()
+      .WriteTo.Console()
+      .WriteTo.File($"logs/{date}.log")
+      .CreateLogger();
+
     // DESKTOP
     var edgeDesktopOptions = new EdgeOptions();
     edgeDesktopOptions.AddExcludedArgument("enable-logging");
     var desktopDriver = new EdgeDriver(edgeDesktopOptions);
-    var bingDesktopFunctions = new BingFunctions(desktopDriver);
+    var bingDesktopFunctions = new BingFunctions(desktopDriver, Log.Logger);
 
     try
     {
@@ -20,12 +30,12 @@ class Program
         bingDesktopFunctions.ActivateRewardCards();
         bingDesktopFunctions.ActivateQuestAndPunchCards();
       }
-      bingDesktopFunctions.CloseSelenium(15);
+      bingDesktopFunctions.CloseSelenium(1);
     }
     catch (Exception ex)
     {
-      bingDesktopFunctions.CloseSelenium(15);
-      AnsiConsole.WriteException(ex);
+      bingDesktopFunctions.CloseSelenium(1);
+      Log.Error(ex.ToString());
     }
 
     // MOBILE
@@ -35,7 +45,7 @@ class Program
       "--user-agent=Mozilla/5.0 (Linux; Android 11; SM-G998B Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.120 Mobile Safari/537.36"
     );
     var mobileDriver = new EdgeDriver(edgeMobileOptions);
-    var bingMobileFunctions = new BingFunctions(mobileDriver);
+    var bingMobileFunctions = new BingFunctions(mobileDriver, Log.Logger);
 
     try
     {
@@ -48,7 +58,7 @@ class Program
     catch (Exception ex)
     {
       bingMobileFunctions.CloseSelenium(15);
-      AnsiConsole.WriteException(ex);
+      Log.Error(ex.ToString());
     }
 
 
