@@ -61,6 +61,7 @@ class Program
       Log.Error(ex.ToString());
     }
 
+    Log.Information($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(mobileDriver)}");
 
     /*
 		driver.Navigate().GoToUrl("https://www.bing.com/search?q=test&form=QBLH&sp=-1&lq=0&pq=tes&sc=10-3&qs=n&sk=&cvid=76F1B249122840479379B9E2F249D038&ghsh=0&ghacc=0&ghpl=");
