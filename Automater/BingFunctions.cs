@@ -1,12 +1,10 @@
 ﻿using Automater;
-using Microsoft.Extensions.Logging;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using Spectre.Console;
 using System.Text.Json;
-
 using System.Text.RegularExpressions;
 
 public class BingFunctions
@@ -63,7 +61,7 @@ public class BingFunctions
     }
     else
     {
-      _logger.Information("Missing login details");
+      _logger.Error("Missing login details");
       return false;
     }
   }
@@ -79,7 +77,7 @@ public class BingFunctions
 
     try
     {
-      _logger.Information("Login check...");
+      Console.WriteLine("Login check...");
 
       if (type == ClientType.Desktop)
       {

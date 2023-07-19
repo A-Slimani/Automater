@@ -16,6 +16,8 @@ class Program
       .WriteTo.File($"logs/{date}.log")
       .CreateLogger();
 
+    Log.Information("=== STARTING AUTOMATER ===");
+
     // DESKTOP
     var edgeDesktopOptions = new EdgeOptions();
     edgeDesktopOptions.AddExcludedArgument("enable-logging");
@@ -53,16 +55,18 @@ class Program
       {
         bingMobileFunctions.AutomatedSearches(ClientType.Mobile);
       }
-      bingMobileFunctions.CloseSelenium(15);
     }
     catch (Exception ex)
     {
-      bingMobileFunctions.CloseSelenium(15);
       Log.Error(ex.ToString());
     }
 
     Log.Information($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(mobileDriver)}");
 
+    Console.WriteLine("START SEND");
+    AutomaterEmail.EmailUpdateSend(Log.Logger, BingElements.GetPointsEarnedToday(mobileDriver));
+    Console.WriteLine("SEND COMPLETE");
+    bingMobileFunctions.CloseSelenium(15);
     /*
 		driver.Navigate().GoToUrl("https://www.bing.com/search?q=test&form=QBLH&sp=-1&lq=0&pq=tes&sc=10-3&qs=n&sk=&cvid=76F1B249122840479379B9E2F249D038&ghsh=0&ghacc=0&ghpl=");
 		var punchcardText = driver.FindElement(By.Id("id_a"));
