@@ -1,67 +1,57 @@
-﻿using OpenQA.Selenium.Edge;
-using Automater;
+﻿using Automater;
 using Serilog;
 
 class Program
 {
-  static void Main(string[] args)
-  {
-    // LOGGING
-    string date = DateTime.Now.ToString("ddMMyy");
-
-    Log.Logger = new LoggerConfiguration()
-      .WriteTo.Console()
-      .WriteTo.File($"logs/{date}.log")
-      .CreateLogger();
-
-    Log.Information("=== STARTING AUTOMATER ===");
-
-    // DESKTOP
-    var edgeDesktopOptions = new EdgeOptions();
-    edgeDesktopOptions.AddExcludedArgument("enable-logging");
-    var desktopDriver = new EdgeDriver(edgeDesktopOptions);
-    var bingDesktopFunctions = new BingFunctions(desktopDriver, Log.Logger);
-
-    try
+    static void Main(string[] args)
     {
-      if (bingDesktopFunctions.RewardsLogin())
-      {
-        bingDesktopFunctions.AutomatedSearches(ClientType.Desktop);
-        bingDesktopFunctions.ActivateRewardCards();
-        bingDesktopFunctions.ActivateQuestAndPunchCards();
-      }
-      bingDesktopFunctions.CloseSelenium(1);
-    }
-    catch (Exception ex)
-    {
-      bingDesktopFunctions.CloseSelenium(1);
-      Log.Error(ex.ToString());
-    }
+        // LOGGING
+        string date = DateTime.Now.ToString("ddMMyy");
 
-    // MOBILE
-    var edgeMobileOptions = new EdgeOptions();
-    edgeMobileOptions.AddExcludedArgument("enable-logging");
-    edgeMobileOptions.AddArgument(
-      "--user-agent=Mozilla/5.0 (Linux; Android 11; SM-G998B Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.120 Mobile Safari/537.36"
-    );
-    var mobileDriver = new EdgeDriver(edgeMobileOptions);
-    var bingMobileFunctions = new BingFunctions(mobileDriver, Log.Logger);
+        Log.Logger = new LoggerConfiguration()
+          .WriteTo.Console()
+          .WriteTo.File($"logs/{date}.log")
+          .CreateLogger();
 
-    try
-    {
-      if (bingMobileFunctions.RewardsLogin())
-      {
-        bingMobileFunctions.AutomatedSearches(ClientType.Mobile);
-      }
+        Log.Information("=== STARTING AUTOMATER ===");
+
+        var driver = Automation.CreateDriver(ClientType.Desktop);
+        var automation = new BingFunctions(driver, Log.Logger);
+
+        try
+        {
+            if (automation.RewardsLogin())
+            {
+                automation.AutomatedSearches(ClientType.Desktop);
+                automation.ActivateRewardCards();
+                automation.ActivateQuestAndPunchCards();
+            }
+            automation.CloseSelenium(1);
+        }
+        catch (Exception ex)
+        {
+            automation.CloseSelenium(1);
+            Log.Error(ex.ToString());
+        }
+
+        // MOBILE
+        driver = Automation.CreateDriver(ClientType.Mobile);
+        automation = new BingFunctions(driver, Log.Logger);
+
+        try
+        {
+            if (automation.RewardsLogin())
+            {
+                automation.AutomatedSearches(ClientType.Mobile);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+        }
+
+        Log.Information($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(driver)}");
+        automation.CloseSelenium(15);
     }
-    catch (Exception ex)
-    {
-      Log.Error(ex.ToString());
-    }
-
-    Log.Information($"POINTS EARNED TODAY: {BingElements.GetPointsEarnedToday(mobileDriver)}");
-    bingMobileFunctions.CloseSelenium(15);
-
-  }
 }
 
