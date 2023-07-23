@@ -199,7 +199,7 @@ public class BingFunctions
     }
     catch
     {
-      _logger.Information("Punchcard Element not found...");
+      _logger.Error("Punchcard Element not found...");
     }
   }
 
