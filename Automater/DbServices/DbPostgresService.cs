@@ -3,14 +3,14 @@ using Npgsql;
 using OpenQA.Selenium.DevTools.V111.DOM;
 using Serilog;
 
-namespace Automater
+namespace Automater.DbServices
 {
-    public class DbService
+    public class DbPostgresService
     {
         private readonly IConfiguration configuration;
         private readonly ILogger _logger;
 
-        public DbService(IConfiguration configuration, Serilog.ILogger logger)
+        public DbPostgresService(IConfiguration configuration, ILogger logger)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _logger = logger;
@@ -41,7 +41,7 @@ namespace Automater
             using var checkExistingCommand = new NpgsqlCommand(checkExistingQuery, connection);
             checkExistingCommand.Parameters.AddWithValue("date", date);
 
-            bool recordExists = (bool)(checkExistingCommand.ExecuteScalar() != null);
+            bool recordExists = checkExistingCommand.ExecuteScalar() != null;
 
             if (!recordExists)
             {

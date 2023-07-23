@@ -367,5 +367,6 @@ FodyWeavers.xsd
 
 # Custom
 Automater/logins.json
+Automater/appsettings.json
 logins.json
 dist
