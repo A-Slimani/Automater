@@ -6,6 +6,7 @@ using SeleniumExtras.WaitHelpers;
 using Spectre.Console;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Serilog;
 
 public class BingFunctions
 {
@@ -21,7 +22,7 @@ public class BingFunctions
   private static readonly string WordListFilePath = Path.Combine(Directory.GetCurrentDirectory(), "word_list.txt");
 
   private readonly IWebDriver _driver;
-  private readonly Serilog.ILogger _logger;
+  private readonly ILogger _logger;
 
   public BingFunctions(IWebDriver driver, Serilog.ILogger logger)
   {
