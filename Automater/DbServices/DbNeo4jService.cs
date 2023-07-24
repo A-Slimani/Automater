@@ -1,27 +1,42 @@
-﻿using AngleSharp;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Serilog;
+using Neo4j.Driver;
+using System.Runtime.InteropServices;
 
 namespace Automater.DbServices
 {
-    public class DbService
+    public class DbNeo4jService 
     {
-        private readonly IConfiguration configuration;
-        private readonly ILogger _logger;
+        private readonly Serilog.ILogger _logger;
 
-        public DbService (IConfiguration configuration, ILogger logger)
+        public DbNeo4jService (Serilog.ILogger logger)
         {
-            this.configuration = configuration ?? throw new ArgumentNullException (nameof (configuration));
             _logger = logger;
         }
 
-        public void UpdatePoints(int pointsEarnedToday, int totalPointsEarned)
+        public async Task UpdatePointsAsync()
         {
-            string? connectionString = configuration.GetConnectionString("DbConnectionString");
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            string? uri = configuration.GetSection("DbConnection:uri").Value;
+            string? user = configuration.GetSection("DbConnection:user").Value;
+            string? password = configuration.GetSection("DbConnection:password").Value;
+
+            string date = DateTime.Now.ToString("dd-MM-yyyy");
+
+            using (var driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password)))
+            using (var session = driver.AsyncSession())
+            {
+
+                var checkExistingQuery = "MATCH (p:points { date: $date }) RETURN p";
+                var parameters = new { date };
+                var result = await session.RunAsync(checkExistingQuery, parameters);
+                var recordExists = await result.SingleAsync(r => r["recordExists"].As<bool>());
+            }
         }
     }
 }

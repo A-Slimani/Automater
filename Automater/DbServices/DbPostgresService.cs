@@ -1,29 +1,26 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Automater.Models;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using OpenQA.Selenium.DevTools.V111.DOM;
 using Serilog;
 
 namespace Automater.DbServices
 {
-    public class DbPostgresService
+    public class DbService
     {
-        private readonly IConfiguration configuration;
         private readonly ILogger _logger;
 
-        public DbPostgresService(IConfiguration configuration, ILogger logger)
+        public DbService(ILogger logger)
         {
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _logger = logger;
         }
 
-        public void UpdatePoints(int pointsEarnedToday, int totalPointsEarned)
+        public void UpdatePoints(BingPoints points)
         {
-            string? connectionString = configuration.GetConnectionString("DbConnectionString");
-
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
-                throw new InvalidOperationException("Connection string not found");
-            }
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
 
             string date = DateTime.Now.ToString("dd-MM-yyyy");
 
@@ -35,7 +32,7 @@ namespace Automater.DbServices
                     points_total = @totalpointsEarned
                 WHERE date=@date";
 
-            var connection = new NpgsqlConnection(connectionString);
+            var connection = new NpgsqlConnection(configuration.GetSection("PostgresDbConnection").Value);
             connection.Open();
 
             using var checkExistingCommand = new NpgsqlCommand(checkExistingQuery, connection);
@@ -50,8 +47,8 @@ namespace Automater.DbServices
                     Parameters =
                     {
                         new NpgsqlParameter("date", NpgsqlTypes.NpgsqlDbType.Date) { Value = date },
-                        new NpgsqlParameter("pointsEarnedToday", NpgsqlTypes.NpgsqlDbType.Integer) { Value = pointsEarnedToday},
-                        new NpgsqlParameter("totalPointsEarned", NpgsqlTypes.NpgsqlDbType.Integer) { Value = totalPointsEarned }
+                        new NpgsqlParameter("pointsEarnedToday", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Today },
+                        new NpgsqlParameter("totalPointsEarned", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Total }
                     }
                 };
                 SqlExecuteCommand(insertCommand);
@@ -63,8 +60,8 @@ namespace Automater.DbServices
                     Parameters =
                     {
                         new NpgsqlParameter("date", NpgsqlTypes.NpgsqlDbType.Date) { Value = date },
-                        new NpgsqlParameter("pointsEarnedToday", NpgsqlTypes.NpgsqlDbType.Integer) { Value = pointsEarnedToday},
-                        new NpgsqlParameter("totalPointsEarned", NpgsqlTypes.NpgsqlDbType.Integer) { Value = totalPointsEarned }
+                        new NpgsqlParameter("pointsEarnedToday", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Today },
+                        new NpgsqlParameter("totalPointsEarned", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Total }
                     }
                 };
                 SqlExecuteCommand(updateCommand);
