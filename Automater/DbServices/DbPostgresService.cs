@@ -24,8 +24,8 @@ namespace Automater.DbServices
 
             string date = DateTime.Now.ToString("dd-MM-yyyy");
 
-            string checkExistingQuery = "SELECT 1 FROM bing_points WHERE date=@date";
-            string insertQuery = "INSERT INTO 'bing_points' VALUES (@date, @pointsEarnedToday, @totalPointsEarned)";
+            string checkExistingQuery = "SELECT 1 FROM bing_points WHERE date = @date";
+            string insertQuery = "INSERT INTO bing_points VALUES (@date, @pointsEarnedToday, @totalPointsEarned)";
             string updateQuery = $@"
                 UPDATE bing_points 
                 SET points_today = @pointsEarnedToday, 
@@ -46,7 +46,7 @@ namespace Automater.DbServices
                 {
                     Parameters =
                     {
-                        new NpgsqlParameter("date", NpgsqlTypes.NpgsqlDbType.Date) { Value = date },
+                        new NpgsqlParameter("date", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = date },
                         new NpgsqlParameter("pointsEarnedToday", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Today },
                         new NpgsqlParameter("totalPointsEarned", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Total }
                     }
@@ -59,7 +59,7 @@ namespace Automater.DbServices
                 {
                     Parameters =
                     {
-                        new NpgsqlParameter("date", NpgsqlTypes.NpgsqlDbType.Date) { Value = date },
+                        new NpgsqlParameter("date", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = date },
                         new NpgsqlParameter("pointsEarnedToday", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Today },
                         new NpgsqlParameter("totalPointsEarned", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Total }
                     }
