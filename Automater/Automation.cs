@@ -13,11 +13,23 @@ public static class Automation
         return new EdgeDriver(options);
     }
 
-    public static void Automate(ClientType type, ILogger logger)
+    public static void Automate(ClientType type, ILogger logger, BingFunctions bingFunctions)
     {
-        var driver = Automation.CreateDriver(type);
-        var automation = new BingFunctions(driver, logger);
-
-
+        try
+        {
+            if(bingFunctions.RewardsLogin())
+            {
+                bingFunctions.AutomatedSearches(type);
+                if (type == ClientType.Desktop) bingFunctions.ActivateRewardCards();
+            }
+        }               
+        catch (Exception ex)
+        {
+            logger.Error(ex.ToString());
+        }
+        finally
+        {
+            if (type == ClientType.Desktop) bingFunctions.CloseSelenium(1);
+        }
     }
  }

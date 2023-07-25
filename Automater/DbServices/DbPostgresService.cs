@@ -1,21 +1,13 @@
 ﻿using Automater.Models;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using OpenQA.Selenium.DevTools.V111.DOM;
 using Serilog;
 
 namespace Automater.DbServices
 {
-    public class DbService
+    public static class DbService
     {
-        private readonly ILogger _logger;
-
-        public DbService(ILogger logger)
-        {
-            _logger = logger;
-        }
-
-        public void UpdatePoints(BingPoints points)
+        public static void UpdatePoints(BingPoints points, ILogger logger)
         {
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -51,7 +43,7 @@ namespace Automater.DbServices
                         new NpgsqlParameter("totalPointsEarned", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Total }
                     }
                 };
-                SqlExecuteCommand(insertCommand);
+                SqlExecuteCommand(insertCommand, logger);
             }
             else
             {
@@ -64,20 +56,20 @@ namespace Automater.DbServices
                         new NpgsqlParameter("totalPointsEarned", NpgsqlTypes.NpgsqlDbType.Integer) { Value = points.Total }
                     }
                 };
-                SqlExecuteCommand(updateCommand);
+                SqlExecuteCommand(updateCommand, logger);
             }
         }
 
-        private void SqlExecuteCommand(NpgsqlCommand sqlCommand)
+        private static void SqlExecuteCommand(NpgsqlCommand sqlCommand, ILogger logger)
         {
             int rowsAffected = sqlCommand.ExecuteNonQuery();
             if (rowsAffected > 0)
             {
-                _logger.Information("Record inserted successfully");
+                logger.Information("Record inserted successfully");
             }
             else
             {
-                _logger.Error("Failed to insert the record");
+                logger.Error("Failed to insert the record");
             }
         }
     }
