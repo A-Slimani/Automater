@@ -13,7 +13,7 @@ public static class Automation
         return new EdgeDriver(options);
     }
 
-    public static void Automate(ClientType type, ILogger logger, BingFunctions bingFunctions)
+    public static void RunBingFunctions(ClientType type, ILogger logger, BingFunctions bingFunctions)
     {
         try
         {

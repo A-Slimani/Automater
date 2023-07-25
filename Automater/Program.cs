@@ -13,12 +13,12 @@ class Program
         // DESKTOP
         var driver = Automation.CreateDriver(ClientType.Desktop);
         var bingFunctions = new BingFunctions(driver, Log.Logger);
-        Automation.Automate(ClientType.Desktop, Log.Logger, bingFunctions);
+        Automation.RunBingFunctions(ClientType.Desktop, Log.Logger, bingFunctions);
     
         // MOBILE
         driver = Automation.CreateDriver(ClientType.Mobile);
         bingFunctions = new BingFunctions(driver, Log.Logger);
-        Automation.Automate(ClientType.Mobile, Log.Logger, bingFunctions);
+        Automation.RunBingFunctions(ClientType.Mobile, Log.Logger, bingFunctions);
 
         var bingPoints = BingElements.GetPointsEarnedToday(driver);
         Log.Information($"POINTS EARNED TODAY: {bingPoints.Today}");
