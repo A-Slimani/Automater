@@ -89,7 +89,7 @@ public class BingFunctions
         }
         _logger.Information("Search login success!");
       }
-      else if(type == ClientType.Mobile)
+      else if (type == ClientType.Mobile)
       {
         var hamburgerElement = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("mHamburger")));
         hamburgerElement.Click();
@@ -103,7 +103,7 @@ public class BingFunctions
       _logger.Information("Already Logged in...");
     }
 
-    int remainingPoints = BingElements.GetRemainingSearches(_driver, type, _logger); 
+    int remainingPoints = BingElements.GetRemainingSearches(_driver, type, _logger);
 
     while (remainingPoints > 0)
     {
@@ -141,20 +141,25 @@ public class BingFunctions
     var incompletedCards = BingElements.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
 
     var actions = new Actions(_driver);
-    foreach (var element in incompletedCards)
+    while (incompletedCards.Count > 0)
     {
-      actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
+      foreach (var element in incompletedCards)
+      {
+        actions.KeyDown(Keys.Control).Click(element).KeyUp(Keys.Control).Build().Perform();
 
-      string cardNameText = element.Text.Split(new string[] { "\n" }, StringSplitOptions.None)[1];
-      var questionCardRegex = new Regex("(quiz|question|that?)", RegexOptions.IgnoreCase);
+        string cardNameText = element.Text.Split(new string[] { "\n" }, StringSplitOptions.None)[1];
+        var questionCardRegex = new Regex("(quiz|question|that?)", RegexOptions.IgnoreCase);
 
-      if (questionCardRegex.IsMatch(cardNameText)) ActivateQuestionCard();
+        if (questionCardRegex.IsMatch(cardNameText)) ActivateQuestionCard();
 
-      var answersText = _driver.FindElements(By.ClassName("bt_cardText"));
-      answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
+        var answersText = _driver.FindElements(By.ClassName("bt_cardText"));
+        answersText.Select(answers => answers.Text).ToList().ForEach(Console.WriteLine);
 
-      var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-      BingHelperFunctions.OpenSetOfElements(element, wait, BingCardType.RewardCard);
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+        BingHelperFunctions.OpenSetOfElements(element, wait, BingCardType.RewardCard);
+      }
+      cardElements = _driver.FindElements(By.XPath("//mee-rewards-daily-set-item-content | //mee-rewards-more-activities-card-item"));
+      incompletedCards = BingElements.FilterElements(cardElements, new Regex(@"mee-icon-AddMedium")).ToList();
     }
 
     _logger.Information("Reward Cards complete...");
